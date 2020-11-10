@@ -1,4 +1,4 @@
-package com.moviebookingwebapp.services;
+package com.webapp.services;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.webapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,7 @@ import com.amazonaws.services.cognitoidp.model.SignUpRequest;
 import com.amazonaws.services.cognitoidp.model.SignUpResult;
 import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
-import com.moviebookingwebapp.models.User;
-import com.moviebookingwebapp.models.UserLoginRequestObject;
+import com.webapp.models.UserLoginRequestObject;
 
 import io.netty.util.internal.StringUtil;
 
@@ -114,7 +114,9 @@ public class UserServiceImpl implements UserService {
 		authParams.put("SECRET_HASH", calculateSecretHash(user.getEmail()));
 		InitiateAuthResult initiateAuthResult = cognitoIdentityProvider.initiateAuth(createInitiateAuthRequest(authParams));
 		if(StringUtil.isNullOrEmpty(initiateAuthResult.getChallengeName())) {
-			return initiateAuthResult.getAuthenticationResult().getIdToken();
+			return initiateAuthResult.getAuthenticationResult().getIdToken()+"\n\n" +
+					initiateAuthResult.getAuthenticationResult().getAccessToken()+"\n\n" +
+					initiateAuthResult.getAuthenticationResult().getRefreshToken();
 		}else
 			return null;
 	}

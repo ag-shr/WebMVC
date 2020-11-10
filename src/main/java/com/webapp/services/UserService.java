@@ -1,10 +1,10 @@
-package com.moviebookingwebapp.services;
+package com.webapp.services;
 
 import com.amazonaws.services.cognitoidp.model.NotAuthorizedException;
 import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
-import com.moviebookingwebapp.models.User;
-import com.moviebookingwebapp.models.UserLoginRequestObject;
+import com.webapp.models.User;
+import com.webapp.models.UserLoginRequestObject;
 
 public interface UserService {
 

@@ -1,4 +1,4 @@
-package com.moviebookingwebapp.models;
+package com.webapp.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

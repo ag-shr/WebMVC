@@ -1,7 +1,8 @@
-package com.moviebookingwebapp.controllers;
+package com.webapp.controllers;
 
 import javax.validation.Valid;
 
+import com.webapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.amazonaws.services.cognitoidp.model.NotAuthorizedException;
 import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
-import com.moviebookingwebapp.exception.MovieBookingWebAppException;
-import com.moviebookingwebapp.models.User;
-import com.moviebookingwebapp.models.UserLoginRequestObject;
-import com.moviebookingwebapp.services.UserService;
+import com.webapp.exception.MovieBookingWebAppException;
+import com.webapp.models.UserLoginRequestObject;
+import com.webapp.services.UserService;
 
 
 @Controller

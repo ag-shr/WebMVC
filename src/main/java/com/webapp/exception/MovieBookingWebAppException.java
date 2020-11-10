@@ -1,4 +1,4 @@
-package com.moviebookingwebapp.exception;
+package com.webapp.exception;
 
 import org.springframework.http.HttpStatus;
 

@@ -10,11 +10,11 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.moviebooking-webapp</groupId>
-	<artifactId>Moviebooking-WebApp</artifactId>
+	<artifactId>WebApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Moviebooking-WebApp</name>
-	<description>Moviebooking spring mvc webapp</description>
+	<name>WebApp</name>
+	<description>Spring mvc webapp</description>
 
 	<properties>
 		<java.version>1.8</java.version>

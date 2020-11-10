@@ -1,4 +1,4 @@
-package com.moviebookingwebapp.models;
+package com.webapp.models;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

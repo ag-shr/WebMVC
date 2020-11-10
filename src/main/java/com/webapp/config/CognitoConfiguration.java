@@ -1,4 +1,4 @@
-package com.moviebookingwebapp.config;
+package com.webapp.config;
 
 import com.amazonaws.regions.Regions;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,8 +36,8 @@ public class CognitoConfiguration {
 	public AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
 		return AWSCognitoIdentityProviderClientBuilder.standard()
 //				.withCredentials(new AWSStaticCredentialsProvider(amazonAwsCredentials()))
-//				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(cognitoEndpoint, region))
-				.withRegion(Regions.US_EAST_1)
+				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(cognitoEndpoint, region))
+//				.withRegion(Regions.US_EAST_1)
 				.build();
 	}
 	
