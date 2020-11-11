@@ -5,13 +5,15 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class AwsCognitoJwtAuthFilter extends GenericFilter {
+public class AwsCognitoJwtAuthFilter extends OncePerRequestFilter {
 
     private static final Log logger = LogFactory.getLog(AwsCognitoJwtAuthFilter.class);
     private AwsCognitoIdTokenProcessor cognitoIdTokenProcessor;
@@ -21,11 +23,11 @@ public class AwsCognitoJwtAuthFilter extends GenericFilter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         Authentication authentication;
 
         try {
-            authentication = this.cognitoIdTokenProcessor.authenticate( (HttpServletRequest) request);
+            authentication = this.cognitoIdTokenProcessor.authenticate(request);
             if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

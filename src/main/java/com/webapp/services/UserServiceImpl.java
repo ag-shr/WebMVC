@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import com.webapp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String loginUser(UserLoginRequestObject user) throws NotAuthorizedException, UserNotConfirmedException {
+    public String loginUser(UserLoginRequestObject user, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
         Map<String, String> authParams = new HashMap<String, String>();
         authParams.put("USERNAME", user.getEmail());
         authParams.put("PASSWORD", user.getPassword());
@@ -98,6 +100,10 @@ public class UserServiceImpl implements UserService {
         InitiateAuthResult initiateAuthResult = cognitoIdentityProvider.initiateAuth(createInitiateAuthRequest(authParams));
 
         if (StringUtil.isNullOrEmpty(initiateAuthResult.getChallengeName())) {
+            Cookie cookie = new Cookie("auth_token", initiateAuthResult.getAuthenticationResult().getIdToken());
+            cookie.setPath("localhost:9090");
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
             return initiateAuthResult.getAuthenticationResult().getIdToken() + "\n\n" +
               initiateAuthResult.getAuthenticationResult().getAccessToken() + "\n\n" +
               initiateAuthResult.getAuthenticationResult().getRefreshToken();

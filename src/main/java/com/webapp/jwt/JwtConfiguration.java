@@ -13,7 +13,7 @@ public class JwtConfiguration {
     private String userNameField = "cognito:username";
     private int connectionTimeout = 2000;
     private int readTimeout = 2000;
-    private String httpHeader = "Authorization";
+    private String httpHeader = "Cookie";
 
     public JwtConfiguration() {
     }

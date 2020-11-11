@@ -24,12 +24,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.headers().cacheControl();
 
-        http.csrf().disable()
-          .authorizeRequests()
-          .antMatchers("/v1/**").authenticated()
-          .anyRequest().permitAll()
-          .and()
-          .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/v1/**").authenticated()
+                .anyRequest().permitAll().and()
+                .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 }

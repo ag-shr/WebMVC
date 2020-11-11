@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -36,9 +37,9 @@ public class LoginController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded", produces = "application/json")
-    public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user) {
+    public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user, HttpServletResponse response) {
         try {
-            return new ResponseEntity<>(userService.loginUser(user), HttpStatus.OK);
+            return new ResponseEntity<>(userService.loginUser(user,response), HttpStatus.OK);
         } catch(NotAuthorizedException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
         } catch(UserNotConfirmedException e) {

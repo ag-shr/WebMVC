@@ -8,15 +8,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class AwsCognitoIdTokenProcessor {
 
 
     private final JwtConfiguration jwtConfiguration;
-
+    private final String tokenName ="auth_token";
     private final ConfigurableJWTProcessor configurableJWTProcessor;
 
     public AwsCognitoIdTokenProcessor(JwtConfiguration jwtConfiguration, ConfigurableJWTProcessor configurableJWTProcessor) {
@@ -25,9 +28,10 @@ public class AwsCognitoIdTokenProcessor {
     }
 
     public Authentication authenticate(HttpServletRequest request) throws Exception {
-        String idToken = request.getHeader(this.jwtConfiguration.getHttpHeader());
-        if (idToken != null) {
-            JWTClaimsSet claims = this.configurableJWTProcessor.process(this.getBearerToken(idToken),null);
+        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals(tokenName)).findFirst();
+//        String idToken = request.getHeader(this.jwtConfiguration.getHttpHeader());
+        if (cookie.isPresent()) {
+            JWTClaimsSet claims = this.configurableJWTProcessor.process(cookie.get().getValue(),null);
             validateIssuer(claims);
             verifyIfIdToken(claims);
             String username = getUserNameFrom(claims);
