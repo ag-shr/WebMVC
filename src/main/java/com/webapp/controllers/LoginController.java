@@ -2,28 +2,41 @@ package com.webapp.controllers;
 
 import com.amazonaws.services.cognitoidp.model.NotAuthorizedException;
 import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
+import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
+
 import com.webapp.exception.MovieBookingWebAppException;
+import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
 import com.webapp.services.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RestController
+@Controller
 public class LoginController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
 
-    @PostMapping("login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequestObject user) {
+    @GetMapping(path = "signUp")
+    public String getRegisterPage() {
+        return "register";
+    }
+
+    @GetMapping(path = "login")
+    public String getLoginPage() {
+        return "login";
+    }
+
+    @RequestMapping(value = "login", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded", produces = "application/json")
+    public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user) {
         try {
             return new ResponseEntity<>(userService.loginUser(user), HttpStatus.OK);
         } catch(NotAuthorizedException e) {
@@ -34,5 +47,14 @@ public class LoginController {
 
     }
 
+    @PostMapping(path = "signUp", consumes = "application/x-www-form-urlencoded", produces = "application/json")
+    public ResponseEntity<String> registerUser(@Valid User user) {
+        System.out.println(user.getEmail());
+        try {
+            return new ResponseEntity<>(userService.createUser(user), HttpStatus.OK);
+        } catch(UsernameExistsException e) {
+            throw new MovieBookingWebAppException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

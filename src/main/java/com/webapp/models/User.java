@@ -13,13 +13,14 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class User {
 
+	@NotNull(message = "Name can not be null")
+	private String name;
 	@NotNull(message = "Email can not be null")
 	@Email(message = "Email should be in correct format")
 	private String email;
 	@NotNull(message = "Password can not be null")
 	private String password;
-	@NotNull(message = "Name can not be null")
-	private String name;
+
 //	@NotNull(message = "Mobile number can not be null")
 //	@Size(min = 10, max = 10)
 //	private String mobile;
