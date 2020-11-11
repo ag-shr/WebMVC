@@ -26,9 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable()
           .authorizeRequests()
-          .antMatchers("**/login").permitAll()
-          .antMatchers("v1/**").authenticated()
-          .anyRequest().authenticated()
+          .antMatchers("/v1/**").authenticated()
+          .anyRequest().permitAll()
           .and()
           .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -26,7 +26,7 @@ public class MainController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@PostMapping(path = "/main/signUpDataRequest")
 	public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
 		try {
@@ -41,18 +41,7 @@ public class MainController {
 	public String getRegisterPage() {
 		return "register";
 	}
-	
-	@PostMapping(path = "/login")
-	public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequestObject user) {
-		try {
-			return new ResponseEntity<>(userService.loginUser(user), HttpStatus.OK);
-		}catch(NotAuthorizedException e) {
-			throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
-		}catch(UserNotConfirmedException e) {
-			throw new MovieBookingWebAppException("Please check your registered mail and click on the provided link to verify your account", HttpStatus.BAD_REQUEST);
-		}
-		
-	}
+
 	
 	@GetMapping(path = "/main/signInDataRequest")
 	public String getLoginPage() {
@@ -62,6 +51,6 @@ public class MainController {
 	//health check added
 	@GetMapping(path = "/main/health")
 	public ResponseEntity<Boolean> healthCheck() {
-		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 }
