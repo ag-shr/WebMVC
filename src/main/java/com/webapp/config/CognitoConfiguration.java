@@ -1,6 +1,18 @@
 package com.webapp.config;
 
+import static com.nimbusds.jose.JWSAlgorithm.RS256;
+
 import com.amazonaws.regions.Regions;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
+import com.nimbusds.jose.proc.JWSKeySelector;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
+import com.nimbusds.jose.util.ResourceRetriever;
+import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import com.webapp.jwt.JwtConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +23,9 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @Configuration
 public class CognitoConfiguration {
@@ -27,6 +42,12 @@ public class CognitoConfiguration {
 	@Value("${aws.cognito.region}")
 	private String region;
 
+	private final JwtConfiguration jwtConfiguration;
+
+	public CognitoConfiguration(JwtConfiguration jwtConfiguration) {
+		this.jwtConfiguration = jwtConfiguration;
+	}
+
 //	@Bean
 //	public AWSCredentials amazonAwsCredentials() {
 //		return new BasicAWSCredentials(awsAccessKey, awsSecretKey);
@@ -40,7 +61,17 @@ public class CognitoConfiguration {
 //				.withRegion(Regions.US_EAST_1)
 				.build();
 	}
-	
+
+	@Bean
+	public ConfigurableJWTProcessor configurableJWTProcessor() throws MalformedURLException {
+		ResourceRetriever resourceRetriever = new DefaultResourceRetriever(2000,2000);
+		URL jwkURL= new URL(jwtConfiguration.getJwkUrl());
+		JWKSource keySource= new RemoteJWKSet(jwkURL, resourceRetriever);
+		ConfigurableJWTProcessor jwtProcessor= new DefaultJWTProcessor();
+		JWSKeySelector keySelector= new JWSVerificationKeySelector(RS256, keySource);
+		jwtProcessor.setJWSKeySelector(keySelector);
+		return jwtProcessor;
+	}
 //	@Bean
 //	public AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
 //		return AWSCognitoIdentityProviderClientBuilder.standard()

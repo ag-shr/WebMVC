@@ -21,13 +21,13 @@ import com.webapp.services.UserService;
 
 
 @Controller
-@RequestMapping(path = "/v1/main")
+@RequestMapping(path = "/v1")
 public class MainController {
 
 	@Autowired
 	private UserService userService;
 	
-	@PostMapping(path = "/signUpDataRequest")
+	@PostMapping(path = "/main/signUpDataRequest")
 	public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
 		try {
 			return new ResponseEntity<String>(userService.createUser(user), HttpStatus.OK);
@@ -37,15 +37,15 @@ public class MainController {
 		
 	}
 
-	@GetMapping(path = "/signUpPageRequest")
+	@GetMapping(path = "/main/signUpPageRequest")
 	public String getRegisterPage() {
 		return "register";
 	}
 	
-	@PostMapping(path = "/signInDataRequest")
+	@PostMapping(path = "/login")
 	public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequestObject user) {
 		try {
-			return new ResponseEntity<String>(userService.loginUser(user), HttpStatus.OK);
+			return new ResponseEntity<>(userService.loginUser(user), HttpStatus.OK);
 		}catch(NotAuthorizedException e) {
 			throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
 		}catch(UserNotConfirmedException e) {
@@ -54,13 +54,13 @@ public class MainController {
 		
 	}
 	
-	@GetMapping(path = "/signInDataRequest")
+	@GetMapping(path = "/main/signInDataRequest")
 	public String getLoginPage() {
 		return "login";
 	}
 	
 	//health check added
-	@GetMapping(path = "/health")
+	@GetMapping(path = "/main/health")
 	public ResponseEntity<Boolean> healthCheck() {
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
