@@ -39,7 +39,7 @@ public class LoginController {
     @PostMapping(value = "login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user, HttpServletResponse response) {
         try {
-            return new ResponseEntity<>(userService.loginUser(user,response), HttpStatus.OK);
+            return new ResponseEntity<>(userService.loginUser(user, response), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
         } catch (UserNotConfirmedException e) {

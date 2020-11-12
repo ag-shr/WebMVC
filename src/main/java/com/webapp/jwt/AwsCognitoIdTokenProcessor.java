@@ -30,10 +30,14 @@ public class AwsCognitoIdTokenProcessor {
     }
 
     public Authentication authenticate(HttpServletRequest request) throws Exception {
+        if (request.getCookies() == null) {
+            return null;
+        }
+
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
           .filter(c -> c.getName().equals(tokenName))
           .findFirst();
-//        String idToken = request.getHeader(this.jwtConfiguration.getHttpHeader());
+
         if (cookie.isPresent()) {
             JWTClaimsSet claims = this.configurableJWTProcessor.process(cookie.get().getValue(),null);
             validateIssuer(claims);
@@ -45,6 +49,7 @@ public class AwsCognitoIdTokenProcessor {
                 return new JwtAuthentication(user, claims, grantedAuthorities);
             }
         }
+
         return null;
     }
 

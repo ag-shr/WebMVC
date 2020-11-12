@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -25,13 +26,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl();
 
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/v1/**").authenticated()
-                .anyRequest().permitAll().and()
-                .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+          .csrf().disable()
+          .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+          .and()
+          .authorizeRequests()
+          .antMatchers("/v1/**").authenticated()
+          .anyRequest().permitAll().and()
+          .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"));
 
     }
 }

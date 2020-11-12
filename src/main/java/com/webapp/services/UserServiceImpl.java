@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
             Cookie cookie = new Cookie("auth_token", initiateAuthResult.getAuthenticationResult().getIdToken());
             cookie.setPath("localhost:9090");
             cookie.setHttpOnly(true);
-            cookie.setSecure(true);
+//            cookie.setSecure(true);
             response.addCookie(cookie);
             return initiateAuthResult.getAuthenticationResult().getIdToken() + "\n\n" +
               initiateAuthResult.getAuthenticationResult().getAccessToken() + "\n\n" +
