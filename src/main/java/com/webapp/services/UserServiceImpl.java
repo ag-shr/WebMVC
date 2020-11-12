@@ -11,7 +11,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import com.webapp.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String loginUser(UserLoginRequestObject user, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
-        Map<String, String> authParams = new HashMap<String, String>();
+        Map<String, String> authParams = new HashMap<>();
         authParams.put("USERNAME", user.getEmail());
         authParams.put("PASSWORD", user.getPassword());
         authParams.put("SECRET_HASH", calculateSecretHash(user.getEmail()));
@@ -103,6 +103,7 @@ public class UserServiceImpl implements UserService {
             Cookie cookie = new Cookie("auth_token", initiateAuthResult.getAuthenticationResult().getIdToken());
             cookie.setPath("localhost:9090");
             cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             response.addCookie(cookie);
             return initiateAuthResult.getAuthenticationResult().getIdToken() + "\n\n" +
               initiateAuthResult.getAuthenticationResult().getAccessToken() + "\n\n" +

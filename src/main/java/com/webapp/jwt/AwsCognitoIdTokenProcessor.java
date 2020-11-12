@@ -2,6 +2,7 @@ package com.webapp.jwt;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +30,9 @@ public class AwsCognitoIdTokenProcessor {
     }
 
     public Authentication authenticate(HttpServletRequest request) throws Exception {
-        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals(tokenName)).findFirst();
+        Optional<Cookie> cookie = Arrays.stream(request.getCookies())
+          .filter(c -> c.getName().equals(tokenName))
+          .findFirst();
 //        String idToken = request.getHeader(this.jwtConfiguration.getHttpHeader());
         if (cookie.isPresent()) {
             JWTClaimsSet claims = this.configurableJWTProcessor.process(cookie.get().getValue(),null);
@@ -60,7 +64,4 @@ public class AwsCognitoIdTokenProcessor {
         }
     }
 
-    private String getBearerToken(String token) {
-        return token.startsWith("Bearer ") ? token.substring("Bearer ".length()) : token;
-    }
 }

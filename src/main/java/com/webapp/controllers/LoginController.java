@@ -36,13 +36,13 @@ public class LoginController {
         return "login";
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded", produces = "application/json")
+    @PostMapping(value = "login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user, HttpServletResponse response) {
         try {
             return new ResponseEntity<>(userService.loginUser(user,response), HttpStatus.OK);
-        } catch(NotAuthorizedException e) {
+        } catch (NotAuthorizedException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
-        } catch(UserNotConfirmedException e) {
+        } catch (UserNotConfirmedException e) {
             throw new MovieBookingWebAppException("Please check your registered mail and click on the provided link to verify your account", HttpStatus.BAD_REQUEST);
         }
 
@@ -53,7 +53,7 @@ public class LoginController {
         System.out.println(user.getEmail());
         try {
             return new ResponseEntity<>(userService.createUser(user), HttpStatus.OK);
-        } catch(UsernameExistsException e) {
+        } catch (UsernameExistsException e) {
             throw new MovieBookingWebAppException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
         }
     }
