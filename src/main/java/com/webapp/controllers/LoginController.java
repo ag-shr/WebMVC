@@ -4,6 +4,8 @@ import com.amazonaws.services.cognitoidp.model.NotAuthorizedException;
 import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.proc.BadJOSEException;
 import com.webapp.exception.MovieBookingWebAppException;
 import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.ParseException;
 
 @Controller
 public class LoginController {
@@ -40,12 +43,23 @@ public class LoginController {
     public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user, HttpServletResponse response) {
         try {
             return new ResponseEntity<>(userService.loginUser(user, response), HttpStatus.OK);
+        } catch (NotAuthorizedException | ParseException | JOSEException | BadJOSEException e) {
+            throw new MovieBookingWebAppException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (UserNotConfirmedException e) {
+            throw new MovieBookingWebAppException("Please check your registered mail and click on the provided link to verify your account", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //testing
+    @GetMapping(value = "refresh/{userName}")
+    public ResponseEntity<String> getNewTokens(@PathVariable("userName") String userName, HttpServletResponse response) {
+        try {
+            return new ResponseEntity<>(userService.generateNewTokens(userName, response), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
         } catch (UserNotConfirmedException e) {
             throw new MovieBookingWebAppException("Please check your registered mail and click on the provided link to verify your account", HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @PostMapping(path = "signUp", consumes = "application/x-www-form-urlencoded", produces = "application/json")

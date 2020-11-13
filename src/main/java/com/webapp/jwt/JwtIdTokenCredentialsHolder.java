@@ -6,9 +6,6 @@ import org.springframework.stereotype.Component;
 public class JwtIdTokenCredentialsHolder {
     private String idToken;
 
-    public JwtIdTokenCredentialsHolder() {
-    }
-
     public String getIdToken() {
         return this.idToken;
     }

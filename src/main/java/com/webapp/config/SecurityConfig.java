@@ -21,19 +21,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.headers().cacheControl();
 
         http
           .csrf().disable()
-          .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+          .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
           .authorizeRequests()
           .antMatchers("/v1/**").authenticated()
           .anyRequest().permitAll().and()
-          .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"));
-
+          .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+//          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"));
     }
 }

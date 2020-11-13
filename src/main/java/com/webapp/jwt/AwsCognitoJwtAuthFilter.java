@@ -2,6 +2,7 @@ package com.webapp.jwt;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,18 +17,15 @@ import java.io.IOException;
 public class AwsCognitoJwtAuthFilter extends OncePerRequestFilter {
 
     private static final Log logger = LogFactory.getLog(AwsCognitoJwtAuthFilter.class);
+    @Autowired
     private AwsCognitoIdTokenProcessor cognitoIdTokenProcessor;
-
-    public AwsCognitoJwtAuthFilter(AwsCognitoIdTokenProcessor cognitoIdTokenProcessor) {
-        this.cognitoIdTokenProcessor = cognitoIdTokenProcessor;
-    }
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         Authentication authentication;
 
         try {
-            authentication = this.cognitoIdTokenProcessor.authenticate(request);
+            authentication = this.cognitoIdTokenProcessor.authenticate(request,response);
             if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

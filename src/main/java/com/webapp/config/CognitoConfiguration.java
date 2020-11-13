@@ -8,6 +8,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
@@ -47,12 +48,12 @@ public class CognitoConfiguration {
 	}
 
 	@Bean
-	public ConfigurableJWTProcessor configurableJWTProcessor() throws MalformedURLException {
+	public ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor() throws MalformedURLException {
 		ResourceRetriever resourceRetriever = new DefaultResourceRetriever(2000,2000);
 		URL jwkURL= new URL(jwtConfiguration.getJwkUrl());
-		JWKSource keySource= new RemoteJWKSet(jwkURL, resourceRetriever);
-		ConfigurableJWTProcessor jwtProcessor= new DefaultJWTProcessor();
-		JWSKeySelector keySelector= new JWSVerificationKeySelector(RS256, keySource);
+		JWKSource<SecurityContext> keySource= new RemoteJWKSet<>(jwkURL, resourceRetriever);
+		ConfigurableJWTProcessor<SecurityContext> jwtProcessor= new DefaultJWTProcessor<>();
+		JWSKeySelector<SecurityContext> keySelector= new JWSVerificationKeySelector<>(RS256, keySource);
 		jwtProcessor.setJWSKeySelector(keySelector);
 		return jwtProcessor;
 	}

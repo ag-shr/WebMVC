@@ -1,8 +1,12 @@
 package com.webapp.jwt;
 
+import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 
+import com.webapp.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,41 +24,48 @@ import java.util.Optional;
 @Component
 public class AwsCognitoIdTokenProcessor {
 
+    @Autowired
+    private JwtConfiguration jwtConfiguration;
+    @Autowired
+    private UserService userService;
 
-    private final JwtConfiguration jwtConfiguration;
-    private final String tokenName ="auth_token";
-    private final ConfigurableJWTProcessor configurableJWTProcessor;
+    private final String tokenName = "auth_token";
 
-    public AwsCognitoIdTokenProcessor(JwtConfiguration jwtConfiguration, ConfigurableJWTProcessor configurableJWTProcessor) {
-        this.jwtConfiguration = jwtConfiguration;
-        this.configurableJWTProcessor = configurableJWTProcessor;
-    }
+    @Autowired
+    private ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor;
 
-    public Authentication authenticate(HttpServletRequest request) throws Exception {
+    public Authentication authenticate(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (request.getCookies() == null) {
             return null;
         }
-
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
-          .filter(c -> c.getName().equals(tokenName))
-          .findFirst();
-
+                .filter(c -> c.getName().equals(tokenName))
+                .findFirst();
         if (cookie.isPresent()) {
-            JWTClaimsSet claims = this.configurableJWTProcessor.process(cookie.get().getValue(),null);
+            JWTClaimsSet claims = null;
+            try {
+                claims = this.configurableJWTProcessor.process(cookie.get().getValue(), null);
+            } catch (BadJOSEException e) {
+                if (e.getMessage().equals("Expired JWT")) {
+                    claims = this.configurableJWTProcessor.process(
+                            userService.generateNewTokens(this.getUserNameFrom(claims), response)
+                            , null);
+                } else
+                    throw new BadJOSEException(e.getMessage());
+            }
             validateIssuer(claims);
             verifyIfIdToken(claims);
             String username = getUserNameFrom(claims);
             if (username != null) {
-                List<GrantedAuthority> grantedAuthorities = List.of( new SimpleGrantedAuthority("ROLE_ADMIN"));
+                List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
                 User user = new User(username, "", List.of());
                 return new JwtAuthentication(user, claims, grantedAuthorities);
             }
         }
-
         return null;
     }
 
-    private String getUserNameFrom(JWTClaimsSet claims) {
+    public String getUserNameFrom(JWTClaimsSet claims) {
         return claims.getClaims().get(this.jwtConfiguration.getUserNameField()).toString();
     }
 
