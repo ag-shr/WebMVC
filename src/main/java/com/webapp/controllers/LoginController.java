@@ -52,9 +52,9 @@ public class LoginController {
 
     //testing
     @GetMapping(value = "refresh/{userName}")
-    public HttpServletResponse getNewTokens(@PathVariable("userName") String userName, HttpServletResponse response) {
+    public ResponseEntity<String> getNewTokens(@PathVariable("userName") String userName, HttpServletResponse response) {
         try {
-            return userService.generateNewTokens(userName, response);
+            return new ResponseEntity<>(userService.generateNewTokens(userName, response), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
         } catch (UserNotConfirmedException e) {

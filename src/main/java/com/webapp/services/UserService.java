@@ -18,6 +18,6 @@ public interface UserService {
 
 	String loginUser(UserLoginRequestObject user, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException, ParseException, JOSEException, BadJOSEException;
 
-	HttpServletResponse generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException;
+	String generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException;
 
 	}

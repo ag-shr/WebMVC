@@ -50,11 +50,11 @@ public class AwsCognitoIdTokenProcessor {
         if (cookie.isPresent()) {
             JWTClaimsSet claims;
             try {
-                claims = this.configurableJWTProcessor.process(cookie.get().getValue(), null);
+                claims = getJwtClaimsSet(cookie.get().getValue());
 
             } catch (BadJOSEException e) {
                 if (e.getMessage().equals("Expired JWT")) {
-                    return handleExpiredToken(request, response, cookie.get());
+                    claims =  handleExpiredToken(response, cookie.get());
 
                 } else
                     throw new BadJOSEException(e.getMessage());
@@ -71,7 +71,13 @@ public class AwsCognitoIdTokenProcessor {
         return null;
     }
 
-    private Authentication handleExpiredToken(HttpServletRequest request, HttpServletResponse response, Cookie cookie) throws Exception {
+    private JWTClaimsSet getJwtClaimsSet(String jwt) throws java.text.ParseException, BadJOSEException, com.nimbusds.jose.JOSEException {
+        JWTClaimsSet claims;
+        claims = this.configurableJWTProcessor.process(jwt, null);
+        return claims;
+    }
+
+    private JWTClaimsSet handleExpiredToken(HttpServletResponse response, Cookie cookie) throws Exception {
         String token = new String(Base64.getDecoder().decode(cookie.getValue().split("\\.")[1]));
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> claimSet = new HashMap<>();
@@ -83,12 +89,12 @@ public class AwsCognitoIdTokenProcessor {
         }
 
         String username = (String) claimSet.get("cognito:username");
-        HttpServletResponse newResponse = userService.generateNewTokens(username, response);
+        String jwt = userService.generateNewTokens(username, response);
 
-        if (newResponse == null)
-            return this.authenticate(null, null);
+        if (jwt == null)
+            return null;
 
-        return this.authenticate(request, newResponse);
+        return getJwtClaimsSet(jwt);
     }
 
     public String getUserNameFrom(JWTClaimsSet claims) {

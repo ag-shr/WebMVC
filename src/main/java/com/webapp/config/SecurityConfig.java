@@ -31,7 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .authorizeRequests()
           .antMatchers("/v1/**").authenticated()
           .anyRequest().permitAll().and()
-          .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"));
+          .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"));
+
     }
 }
