@@ -1,5 +1,7 @@
 package com.webapp.jwt;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -17,39 +19,43 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class AwsCognitoIdTokenProcessor {
 
-    @Autowired
-    private JwtConfiguration jwtConfiguration;
+    private final JwtConfiguration jwtConfiguration;
+
     @Autowired
     private UserService userService;
 
     private final String tokenName = "auth_token";
 
-    @Autowired
-    private ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor;
+    private final ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor;
+
+    public AwsCognitoIdTokenProcessor(JwtConfiguration jwtConfiguration, ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor) {
+        this.jwtConfiguration = jwtConfiguration;
+        this.configurableJWTProcessor = configurableJWTProcessor;
+    }
 
     public Authentication authenticate(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (request.getCookies() == null) {
+        if (request == null || request.getCookies() == null) {
             return null;
         }
+
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals(tokenName))
                 .findFirst();
+
         if (cookie.isPresent()) {
-            JWTClaimsSet claims = null;
+            JWTClaimsSet claims;
             try {
                 claims = this.configurableJWTProcessor.process(cookie.get().getValue(), null);
+
             } catch (BadJOSEException e) {
                 if (e.getMessage().equals("Expired JWT")) {
-                    claims = this.configurableJWTProcessor.process(
-                            userService.generateNewTokens(this.getUserNameFrom(claims), response)
-                            , null);
+                    return handleExpiredToken(request, response, cookie.get());
+
                 } else
                     throw new BadJOSEException(e.getMessage());
             }
@@ -63,6 +69,26 @@ public class AwsCognitoIdTokenProcessor {
             }
         }
         return null;
+    }
+
+    private Authentication handleExpiredToken(HttpServletRequest request, HttpServletResponse response, Cookie cookie) throws Exception {
+        String token = new String(Base64.getDecoder().decode(cookie.getValue().split("\\.")[1]));
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> claimSet = new HashMap<>();
+
+        try {
+            claimSet = mapper.readValue(token, new TypeReference<>() {});
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        String username = (String) claimSet.get("cognito:username");
+        HttpServletResponse newResponse = userService.generateNewTokens(username, response);
+
+        if (newResponse == null)
+            return this.authenticate(null, null);
+
+        return this.authenticate(request, newResponse);
     }
 
     public String getUserNameFrom(JWTClaimsSet claims) {

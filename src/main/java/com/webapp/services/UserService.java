@@ -17,6 +17,7 @@ public interface UserService {
 	String createUser(User user) throws UsernameExistsException;
 
 	String loginUser(UserLoginRequestObject user, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException, ParseException, JOSEException, BadJOSEException;
-	String generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException;
+
+	HttpServletResponse generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException;
 
 	}

@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
+    public HttpServletResponse generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
         Map<String, String> authParams = new HashMap<String, String>();
 //        TODO: also take previous id token, to check whether the expired token is the last token stored in db.
         Optional<UserTokens> userTokens = repository.findById(userName);
@@ -147,10 +147,10 @@ public class UserServiceImpl implements UserService {
             userTokens.get().setAccessToken(initiateAuthResult.getAuthenticationResult().getAccessToken());
             repository.save(userTokens.get());
             response.addCookie(cookie);
-            return idToken;
+            return response;
         }
 
-        return "Login Again";
+        return response;
     }
 
     private InitiateAuthRequest createInitiateAuthRequest(Map<String, String> authParams, AuthFlowType authFlowType) {
