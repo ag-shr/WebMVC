@@ -54,7 +54,7 @@ public class LoginController {
     @GetMapping(value = "refresh/{userName}")
     public ResponseEntity<String> getNewTokens(@PathVariable("userName") String userName, HttpServletResponse response) {
         try {
-            return new ResponseEntity<>(userService.generateNewTokens(userName, response), HttpStatus.OK);
+            return new ResponseEntity<>(userService.generateNewTokens(userName,null, response), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
         } catch (UserNotConfirmedException e) {

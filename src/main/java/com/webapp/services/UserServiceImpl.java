@@ -127,11 +127,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String generateNewTokens(String userName, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
+    public String generateNewTokens(String userName, String lastIdToken, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
         Map<String, String> authParams = new HashMap<String, String>();
 //        TODO: also take previous id token, to check whether the expired token is the last token stored in db.
         Optional<UserTokens> userTokens = repository.findById(userName);
-        if (userTokens.isEmpty())
+        if (userTokens.isEmpty()||!userTokens.get().getIdToken().equals(lastIdToken))
             return null;
 
         authParams.put("REFRESH_TOKEN", userTokens.get().getRefreshToken());

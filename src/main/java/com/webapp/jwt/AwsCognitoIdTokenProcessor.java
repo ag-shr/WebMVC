@@ -56,7 +56,8 @@ public class AwsCognitoIdTokenProcessor {
                 if (e.getMessage().equals("Expired JWT")) {
                     System.out.println("Expired");
                     claims =  handleExpiredToken(response, cookie.get());
-
+                    if(claims==null)
+                        return null;
                 } else
                     throw new BadJOSEException(e.getMessage());
             }
@@ -90,7 +91,7 @@ public class AwsCognitoIdTokenProcessor {
         }
 
         String username = (String) claimSet.get("cognito:username");
-        String jwt = userService.generateNewTokens(username, response);
+        String jwt = userService.generateNewTokens(username, cookie.getValue(), response);
 
         if (jwt == null)
             return null;
