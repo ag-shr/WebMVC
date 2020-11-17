@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         Map<String, String> authParams = new HashMap<>();
 //        TODO: add multiple device functionality
         Optional<UserTokens> userTokens = repository.findById(userName);
-        if (userTokens.isEmpty() /*|| !userTokens.get().getIdToken().equals(lastIdToken)*/)
+        if (userTokens.isEmpty() || !userTokens.get().getIdToken().equals(lastIdToken))
             return null;
 
         authParams.put("REFRESH_TOKEN", userTokens.get().getRefreshToken());

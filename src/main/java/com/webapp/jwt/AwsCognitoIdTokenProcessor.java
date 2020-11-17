@@ -52,8 +52,6 @@ public class AwsCognitoIdTokenProcessor {
             JWTClaimsSet claims;
             try {
                 claims = getJwtClaimsSet(cookie.get().getValue());
-                throw new BadJOSEException("Expired JWT");
-
             } catch (BadJOSEException e) {
                 if (e.getMessage().equals("Expired JWT")) {
                     System.out.println("Expired");
@@ -99,12 +97,11 @@ public class AwsCognitoIdTokenProcessor {
         if (jwt == null)
             return null;
 
-//        cookie.setValue(jwt);
-//        cookie.setHttpOnly(true);
-        Cookie cookie1 = new Cookie("auth_token", jwt);
+        cookie.setValue(jwt);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        response.addCookie(cookie1);
+        response.addCookie(cookie);
+
         return getJwtClaimsSet(jwt);
     }
 
