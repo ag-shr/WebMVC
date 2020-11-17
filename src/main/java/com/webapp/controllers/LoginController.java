@@ -7,6 +7,7 @@ import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.webapp.exception.MovieBookingWebAppException;
+import com.webapp.models.ResetPasswordRequest;
 import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
 import com.webapp.services.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 
 @Controller
@@ -70,6 +72,28 @@ public class LoginController {
         } catch (UsernameExistsException e) {
             throw new MovieBookingWebAppException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("forgot")
+    public String forgot() {
+        return "forgotPassword";
+    }
+
+    @GetMapping("reset")
+    public String reset() {
+        return "resetPassword";
+    }
+
+    @GetMapping("forgot/{username}")
+    public void forgotPassword(@PathVariable("username") String username, HttpServletResponse response) throws IOException {
+        System.out.println(username);
+        userService.sendCodeForgotPassword(username);
+        response.sendRedirect("resetPassword.html");
+    }
+
+    @PostMapping(value = "reset", consumes = "application/x-www-form-urlencoded")
+    public void resetPassword(ResetPasswordRequest request) {
+        userService.resetPassword(request);
     }
 
 }

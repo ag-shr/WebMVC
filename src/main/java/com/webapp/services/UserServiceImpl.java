@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.webapp.jwt.AwsCognitoIdTokenProcessor;
+import com.webapp.models.ResetPasswordRequest;
 import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
 import com.webapp.models.UserTokens;
@@ -154,5 +155,26 @@ public class UserServiceImpl implements UserService {
                 .withAuthFlow(authFlowType)
                 .withAuthParameters(authParams);
     }
+
+    public void sendCodeForgotPassword(String username) {
+        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest()
+          .withClientId(clientId)
+          .withSecretHash(calculateSecretHash(username))
+          .withUsername(username);
+
+        cognitoIdentityProvider.forgotPassword(forgotPasswordRequest);
+    }
+
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        ConfirmForgotPasswordRequest request = new ConfirmForgotPasswordRequest()
+          .withClientId(clientId)
+          .withUsername(resetPasswordRequest.getUsername())
+          .withPassword(resetPasswordRequest.getPassword())
+          .withConfirmationCode(resetPasswordRequest.getCode())
+          .withSecretHash(calculateSecretHash(resetPasswordRequest.getUsername()));
+
+        cognitoIdentityProvider.confirmForgotPassword(request);
+    }
+
 
 }

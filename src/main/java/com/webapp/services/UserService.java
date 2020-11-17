@@ -6,6 +6,7 @@ import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
+import com.webapp.models.ResetPasswordRequest;
 import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
 
@@ -20,4 +21,7 @@ public interface UserService {
 
 	String generateNewTokens(String userName, String lastIdToken, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException;
 
-	}
+	void sendCodeForgotPassword(String username);
+
+	void resetPassword(ResetPasswordRequest request);
+}
