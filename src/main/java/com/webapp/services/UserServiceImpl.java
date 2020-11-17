@@ -139,9 +139,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String generateNewTokens(String userName, String lastIdToken, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
+    public String generateNewTokens(String userName, String lastIdToken) throws NotAuthorizedException, UserNotConfirmedException {
         Map<String, String> authParams = new HashMap<>();
-//        TODO: also take previous id token, to check whether the expired token is the last token stored in db.
+//        TODO: add multiple device functionality
         Optional<UserTokens> userTokens = repository.findById(userName);
         if (userTokens.isEmpty() || !userTokens.get().getIdToken().equals(lastIdToken))
             return null;

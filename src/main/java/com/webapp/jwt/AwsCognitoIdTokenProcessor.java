@@ -44,7 +44,6 @@ public class AwsCognitoIdTokenProcessor {
         if (request == null || request.getCookies() == null) {
             return null;
         }
-
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
           .filter(c -> c.getName().equals(tokenName))
           .findFirst();
@@ -94,7 +93,7 @@ public class AwsCognitoIdTokenProcessor {
         }
 
         String username = (String) claimSet.get("cognito:username");
-        String jwt = userService.generateNewTokens(username, cookie.getValue(), response);
+        String jwt = userService.generateNewTokens(username, cookie.getValue());
 
         if (jwt == null)
             return null;

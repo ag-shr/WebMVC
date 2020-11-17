@@ -52,18 +52,6 @@ public class LoginController {
         }
     }
 
-    //testing
-    @GetMapping(value = "refresh/{userName}")
-    public ResponseEntity<String> getNewTokens(@PathVariable("userName") String userName, HttpServletResponse response) {
-        try {
-            return new ResponseEntity<>(userService.generateNewTokens(userName,null, response), HttpStatus.OK);
-        } catch (NotAuthorizedException e) {
-            throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
-        } catch (UserNotConfirmedException e) {
-            throw new MovieBookingWebAppException("Please check your registered mail and click on the provided link to verify your account", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PostMapping(path = "signUp", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     public ResponseEntity<String> registerUser(@Valid User user) {
         System.out.println(user.getEmail());
@@ -88,12 +76,13 @@ public class LoginController {
     public void forgotPassword(@RequestParam("email") String username, HttpServletResponse response) throws IOException {
         System.out.println(username);
         userService.sendCodeForgotPassword(username);
-        response.sendRedirect("/resetPassword.html");
+        response.sendRedirect("reset");
     }
 
     @PostMapping(value = "reset", consumes = "application/x-www-form-urlencoded")
-    public void resetPassword(ResetPasswordRequest request) {
+    public void resetPassword(ResetPasswordRequest request, HttpServletResponse response) throws IOException {
         userService.resetPassword(request);
+        response.sendRedirect("login");
     }
 
 }
