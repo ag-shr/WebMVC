@@ -2,12 +2,14 @@ package com.webapp.jwt;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 
 import com.webapp.services.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,8 +46,8 @@ public class AwsCognitoIdTokenProcessor {
         }
 
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
-                .filter(c -> c.getName().equals(tokenName))
-                .findFirst();
+          .filter(c -> c.getName().equals(tokenName))
+          .findFirst();
 
         if (cookie.isPresent()) {
             JWTClaimsSet claims;
@@ -55,8 +57,8 @@ public class AwsCognitoIdTokenProcessor {
             } catch (BadJOSEException e) {
                 if (e.getMessage().equals("Expired JWT")) {
                     System.out.println("Expired");
-                    claims =  handleExpiredToken(response, cookie.get());
-                    if(claims==null)
+                    claims = handleExpiredToken(response, cookie.get());
+                    if (claims == null)
                         return null;
                 } else
                     throw new BadJOSEException(e.getMessage());
@@ -73,7 +75,8 @@ public class AwsCognitoIdTokenProcessor {
         return null;
     }
 
-    private JWTClaimsSet getJwtClaimsSet(String jwt) throws java.text.ParseException, BadJOSEException, com.nimbusds.jose.JOSEException {
+    private JWTClaimsSet getJwtClaimsSet(String jwt) throws java.text.ParseException, BadJOSEException,
+      com.nimbusds.jose.JOSEException {
         JWTClaimsSet claims;
         claims = this.configurableJWTProcessor.process(jwt, null);
         return claims;
@@ -114,7 +117,8 @@ public class AwsCognitoIdTokenProcessor {
 
     private void validateIssuer(JWTClaimsSet claims) throws Exception {
         if (!claims.getIssuer().equals(this.jwtConfiguration.getCognitoIdentityPoolUrl())) {
-            throw new Exception(String.format("Issuer %s does not match cognito idp %s", claims.getIssuer(), this.jwtConfiguration.getCognitoIdentityPoolUrl()));
+            throw new Exception(String.format("Issuer %s does not match cognito idp %s", claims.getIssuer(),
+              this.jwtConfiguration.getCognitoIdentityPoolUrl()));
         }
     }
 

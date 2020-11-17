@@ -15,7 +15,8 @@ public class UserLoginRequestObject {
 	}
 
 	public UserLoginRequestObject(
-			@NotNull(message = "Email can not be null") @Email(message = "Email should be in correct format") String email,
+			@NotNull(message = "Email can not be null")
+			@Email(message = "Email should be in correct format") String email,
 			@NotNull(message = "Password can not be null") String password) {
 		super();
 		this.email = email;

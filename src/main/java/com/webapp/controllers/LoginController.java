@@ -84,11 +84,11 @@ public class LoginController {
         return "resetPassword";
     }
 
-    @GetMapping("forgot/{username}")
-    public void forgotPassword(@PathVariable("username") String username, HttpServletResponse response) throws IOException {
+    @GetMapping("forgotPassword")
+    public void forgotPassword(@RequestParam("email") String username, HttpServletResponse response) throws IOException {
         System.out.println(username);
         userService.sendCodeForgotPassword(username);
-        response.sendRedirect("resetPassword.html");
+        response.sendRedirect("/resetPassword.html");
     }
 
     @PostMapping(value = "reset", consumes = "application/x-www-form-urlencoded")

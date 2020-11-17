@@ -2,19 +2,22 @@ package com.webapp.services;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.*;
+
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+
 import com.webapp.jwt.AwsCognitoIdTokenProcessor;
 import com.webapp.models.ResetPasswordRequest;
 import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
 import com.webapp.models.UserTokens;
 import com.webapp.repository.UserTokensRepository;
+
 import io.netty.util.internal.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,23 +38,30 @@ public class UserServiceImpl implements UserService {
 
     private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
 
-    @Autowired
-    private AWSCognitoIdentityProvider cognitoIdentityProvider;
+    private final AWSCognitoIdentityProvider cognitoIdentityProvider;
 
-    @Autowired
-    private AwsCognitoIdTokenProcessor awsCognitoIdTokenProcessor;
+    private final AwsCognitoIdTokenProcessor awsCognitoIdTokenProcessor;
 
-    @Autowired
-    private ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor;
+    private final ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor;
 
-    @Autowired
-    private UserTokensRepository repository;
+    private final UserTokensRepository repository;
 
     @Value("${aws.cognito.clientId}")
     private String clientId;
 
     @Value("${aws.cognito.clientSecret}")
     private String clientSecret;
+
+    public UserServiceImpl(AWSCognitoIdentityProvider cognitoIdentityProvider,
+                           AwsCognitoIdTokenProcessor awsCognitoIdTokenProcessor,
+                           ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor,
+                           UserTokensRepository repository) {
+
+        this.cognitoIdentityProvider = cognitoIdentityProvider;
+        this.awsCognitoIdTokenProcessor = awsCognitoIdTokenProcessor;
+        this.configurableJWTProcessor = configurableJWTProcessor;
+        this.repository = repository;
+    }
 
     @Override
     public String createUser(User user) throws UsernameExistsException {
@@ -63,18 +74,18 @@ public class UserServiceImpl implements UserService {
 
     private SignUpRequest createSignUpRequest(User user) {
         return new SignUpRequest()
-                .withClientId(clientId)
-                .withSecretHash(calculateSecretHash(user.getEmail()))
-                .withUsername(user.getEmail())
-                .withPassword(user.getPassword())
-                .withUserAttributes(
-                        new AttributeType()
-                                .withName("email")
-                                .withValue(user.getEmail()),
-                        new AttributeType()
-                                .withName("name")
-                                .withValue(user.getName())
-                );
+          .withClientId(clientId)
+          .withSecretHash(calculateSecretHash(user.getEmail()))
+          .withUsername(user.getEmail())
+          .withPassword(user.getPassword())
+          .withUserAttributes(
+            new AttributeType()
+              .withName("email")
+              .withValue(user.getEmail()),
+            new AttributeType()
+              .withName("name")
+              .withValue(user.getName())
+          );
     }
 
     public String calculateSecretHash(String userName) {
@@ -83,8 +94,8 @@ public class UserServiceImpl implements UserService {
         }
 
         SecretKeySpec signingKey = new SecretKeySpec(
-                clientSecret.getBytes(StandardCharsets.UTF_8),
-                HMAC_SHA256_ALGORITHM);
+          clientSecret.getBytes(StandardCharsets.UTF_8),
+          HMAC_SHA256_ALGORITHM);
         try {
             Mac mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
             mac.init(signingKey);
@@ -104,7 +115,7 @@ public class UserServiceImpl implements UserService {
         authParams.put("PASSWORD", user.getPassword());
         authParams.put("SECRET_HASH", calculateSecretHash(user.getEmail()));
         InitiateAuthResult initiateAuthResult = cognitoIdentityProvider
-                .initiateAuth(createInitiateAuthRequest(authParams, AuthFlowType.USER_PASSWORD_AUTH));
+          .initiateAuth(createInitiateAuthRequest(authParams, AuthFlowType.USER_PASSWORD_AUTH));
         if (StringUtil.isNullOrEmpty(initiateAuthResult.getChallengeName())) {
             String idToken = initiateAuthResult.getAuthenticationResult().getIdToken();
 
@@ -112,9 +123,9 @@ public class UserServiceImpl implements UserService {
             String userName = awsCognitoIdTokenProcessor.getUserNameFrom(claims);
 
             repository.save(new UserTokens(userName
-                    , idToken
-                    , initiateAuthResult.getAuthenticationResult().getAccessToken()
-                    , initiateAuthResult.getAuthenticationResult().getRefreshToken()));
+              , idToken
+              , initiateAuthResult.getAuthenticationResult().getAccessToken()
+              , initiateAuthResult.getAuthenticationResult().getRefreshToken()));
 
             Cookie cookie = new Cookie("auth_token", idToken);
             cookie.setPath("localhost:9090");
@@ -129,16 +140,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String generateNewTokens(String userName, String lastIdToken, HttpServletResponse response) throws NotAuthorizedException, UserNotConfirmedException {
-        Map<String, String> authParams = new HashMap<String, String>();
+        Map<String, String> authParams = new HashMap<>();
 //        TODO: also take previous id token, to check whether the expired token is the last token stored in db.
         Optional<UserTokens> userTokens = repository.findById(userName);
-        if (userTokens.isEmpty()||!userTokens.get().getIdToken().equals(lastIdToken))
+        if (userTokens.isEmpty() || !userTokens.get().getIdToken().equals(lastIdToken))
             return null;
 
         authParams.put("REFRESH_TOKEN", userTokens.get().getRefreshToken());
         authParams.put("SECRET_HASH", calculateSecretHash(userName));
         InitiateAuthResult initiateAuthResult = cognitoIdentityProvider
-                .initiateAuth(createInitiateAuthRequest(authParams, AuthFlowType.REFRESH_TOKEN));
+          .initiateAuth(createInitiateAuthRequest(authParams, AuthFlowType.REFRESH_TOKEN));
 
         if (StringUtil.isNullOrEmpty(initiateAuthResult.getChallengeName())) {
             String idToken = initiateAuthResult.getAuthenticationResult().getIdToken();
@@ -152,8 +163,8 @@ public class UserServiceImpl implements UserService {
 
     private InitiateAuthRequest createInitiateAuthRequest(Map<String, String> authParams, AuthFlowType authFlowType) {
         return new InitiateAuthRequest().withClientId(clientId)
-                .withAuthFlow(authFlowType)
-                .withAuthParameters(authParams);
+          .withAuthFlow(authFlowType)
+          .withAuthParameters(authParams);
     }
 
     public void sendCodeForgotPassword(String username) {
