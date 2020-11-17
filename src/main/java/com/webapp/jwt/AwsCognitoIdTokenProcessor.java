@@ -54,6 +54,7 @@ public class AwsCognitoIdTokenProcessor {
 
             } catch (BadJOSEException e) {
                 if (e.getMessage().equals("Expired JWT")) {
+                    System.out.println("Expired");
                     claims =  handleExpiredToken(response, cookie.get());
 
                 } else
@@ -94,6 +95,9 @@ public class AwsCognitoIdTokenProcessor {
         if (jwt == null)
             return null;
 
+        cookie.setValue(jwt);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
         return getJwtClaimsSet(jwt);
     }
 
