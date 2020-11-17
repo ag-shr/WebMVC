@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
               , initiateAuthResult.getAuthenticationResult().getRefreshToken()));
 
             Cookie cookie = new Cookie("auth_token", idToken);
-            cookie.setPath("localhost:9090");
+            cookie.setPath("/");
             cookie.setHttpOnly(true);
 //            cookie.setSecure(true);
             response.addCookie(cookie);
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         Map<String, String> authParams = new HashMap<>();
 //        TODO: add multiple device functionality
         Optional<UserTokens> userTokens = repository.findById(userName);
-        if (userTokens.isEmpty() || !userTokens.get().getIdToken().equals(lastIdToken))
+        if (userTokens.isEmpty() /*|| !userTokens.get().getIdToken().equals(lastIdToken)*/)
             return null;
 
         authParams.put("REFRESH_TOKEN", userTokens.get().getRefreshToken());
