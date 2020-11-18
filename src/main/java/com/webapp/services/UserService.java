@@ -11,6 +11,7 @@ import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.text.ParseException;
 
 public interface UserService {
@@ -21,7 +22,9 @@ public interface UserService {
 
 	String generateNewTokens(String userName, String lastIdToken) throws NotAuthorizedException, UserNotConfirmedException;
 
-	void sendCodeForgotPassword(String username);
+	String forgotPassword(String username);
 
 	void resetPassword(ResetPasswordRequest request);
+
+	public void logout(Principal principal, HttpServletResponse response);
 }

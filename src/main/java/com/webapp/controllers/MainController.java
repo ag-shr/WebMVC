@@ -11,11 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(path = "v1")
 public class MainController {
 
-	@GetMapping
-	public String index() {
-		return "index";
-	}
-
 	@GetMapping(path = "health")
 	public ResponseEntity<Boolean> healthCheck() {
 		return new ResponseEntity<>(true, HttpStatus.OK);

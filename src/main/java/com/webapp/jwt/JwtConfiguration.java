@@ -10,7 +10,7 @@ public class JwtConfiguration {
     private String identityPoolId;
     private String jwkUrl;
     private String region = "us-east-1";
-    private String userNameField = "cognito:username";
+    private String userNameField = "email"/*"cognito:username"*/;
     private int connectionTimeout = 2000;
     private int readTimeout = 2000;
     private String httpHeader = "Cookie";

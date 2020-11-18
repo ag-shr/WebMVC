@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.text.ParseException;
 
 @Controller
@@ -32,12 +33,16 @@ public class LoginController {
     }
 
     @GetMapping(path = "signUp")
-    public String getRegisterPage() {
+    public String getRegisterPage(Principal principal) {
+        if(principal!=null)
+            return "index";
         return "register";
     }
 
     @GetMapping(path = "login")
-    public String getLoginPage() {
+    public String getLoginPage(Principal principal) {
+        if(principal!=null)
+            return "index";
         return "login";
     }
 
@@ -63,26 +68,36 @@ public class LoginController {
     }
 
     @GetMapping("forgot")
-    public String forgot() {
+    public String forgot(Principal principal) {
+        if(principal!=null)
+            return "index";
         return "forgotPassword";
     }
 
     @GetMapping("reset")
-    public String reset() {
+    public String reset(Principal principal) {
+        if(principal!=null)
+            return "index";
         return "resetPassword";
     }
 
     @GetMapping("forgotPassword")
-    public void forgotPassword(@RequestParam("email") String username, HttpServletResponse response) throws IOException {
-        System.out.println(username);
-        userService.sendCodeForgotPassword(username);
-        response.sendRedirect("reset");
+    public String forgotPassword(@RequestParam("email") String username, HttpServletResponse response) throws IOException {
+        return userService.forgotPassword(username);
     }
 
     @PostMapping(value = "reset", consumes = "application/x-www-form-urlencoded")
     public void resetPassword(ResetPasswordRequest request, HttpServletResponse response) throws IOException {
         userService.resetPassword(request);
         response.sendRedirect("login");
+    }
+
+    @GetMapping(path = "logout")
+    public void logout(Principal principal, HttpServletResponse response) throws IOException {
+        System.out.println("erfsdfsdfsdf");
+        userService.logout(principal,response);
+        System.out.println(principal.getName());
+
     }
 
 }
