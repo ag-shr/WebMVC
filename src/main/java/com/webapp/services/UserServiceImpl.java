@@ -216,7 +216,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void logout(Principal principal, HttpServletResponse response){
-        System.out.println(principal.getName());
         repository.deleteById(principal.getName());
         Cookie cookie = new Cookie("auth_token", null);
         cookie.setPath("/");

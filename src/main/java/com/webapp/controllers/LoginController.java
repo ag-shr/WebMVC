@@ -92,12 +92,12 @@ public class LoginController {
         response.sendRedirect("login");
     }
 
-    @GetMapping(path = "logout")
+    @GetMapping(path = "logoutUser")
     public void logout(Principal principal, HttpServletResponse response) throws IOException {
-        System.out.println("erfsdfsdfsdf");
+        if(principal!=null)
+            response.sendRedirect("");
         userService.logout(principal,response);
-        System.out.println(principal.getName());
-
+        response.sendRedirect("login");
     }
 
 }
