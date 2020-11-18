@@ -94,7 +94,7 @@ public class LoginController {
 
     @GetMapping(path = "logoutUser")
     public void logout(Principal principal, HttpServletResponse response) throws IOException {
-        if(principal!=null)
+        if(principal==null)
             response.sendRedirect("");
         userService.logout(principal,response);
         response.sendRedirect("login");
