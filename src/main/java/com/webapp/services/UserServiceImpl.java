@@ -204,7 +204,6 @@ public class UserServiceImpl implements UserService {
                 throw new MovieBookingWebAppException("Invalid username or password", HttpStatus.BAD_REQUEST);
             return "resetPassword";
         } catch (AWSCognitoIdentityProviderException e) {
-            e.printStackTrace();
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
         }
     }
