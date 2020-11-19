@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
                 cognitoIdentityProvider.forgotPassword(sendCodeForgotPassword(userEmail));
             else if (adminGetUserResult.getUserStatus().equals("UNCONFIRMED")) {
                 cognitoIdentityProvider.resendConfirmationCode(createResendConfirmationCodeRequest(userEmail));
-                return "Your account is not verified yet. Please check your registered mail and click on the provided link to verify your account";
+                return "unverifiedEmail";
             } else
                 throw new MovieBookingWebAppException("Invalid username or password", HttpStatus.BAD_REQUEST);
             return "resetPassword";

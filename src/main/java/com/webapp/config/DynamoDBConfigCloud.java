@@ -14,23 +14,23 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 
-@Configuration
-@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
-public class DynamoDBConfigCloud {
-
-    @Bean
-    public AmazonDynamoDB amazonDynamoDB() {
-        return AmazonDynamoDBClientBuilder.standard()
-                .withRegion(Regions.US_EAST_1)
-                .build();
-    }
-    @PostConstruct
-    private void setupTables() {
-        AmazonDynamoDB amazonDynamoDB = amazonDynamoDB();
-        DynamoDBMapper mapper = new DynamoDBMapper(amazonDynamoDB);
-
-        CreateTableRequest tableRequest = mapper.generateCreateTableRequest(UserTokens.class);
-        tableRequest.setProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
-        TableUtils.createTableIfNotExists(amazonDynamoDB, tableRequest);
-    }
-}
+//@Configuration
+//@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
+//public class DynamoDBConfigCloud {
+//
+//    @Bean
+//    public AmazonDynamoDB amazonDynamoDB() {
+//        return AmazonDynamoDBClientBuilder.standard()
+//                .withRegion(Regions.US_EAST_1)
+//                .build();
+//    }
+//    @PostConstruct
+//    private void setupTables() {
+//        AmazonDynamoDB amazonDynamoDB = amazonDynamoDB();
+//        DynamoDBMapper mapper = new DynamoDBMapper(amazonDynamoDB);
+//
+//        CreateTableRequest tableRequest = mapper.generateCreateTableRequest(UserTokens.class);
+//        tableRequest.setProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+//        TableUtils.createTableIfNotExists(amazonDynamoDB, tableRequest);
+//    }
+//}

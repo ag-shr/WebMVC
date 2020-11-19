@@ -86,7 +86,8 @@ public class AwsCognitoIdTokenProcessor {
         Map<String, Object> claimSet = new HashMap<>();
 
         try {
-            claimSet = mapper.readValue(token, new TypeReference<>() {});
+            claimSet = mapper.readValue(token, new TypeReference<>() {
+            });
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

@@ -11,8 +11,11 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+
 import com.webapp.models.UserTokens;
+
 import lombok.extern.log4j.Log4j2;
+
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +24,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 
 @Log4j2
-//@Configuration
-//@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
+@Configuration
+@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
 public class DynamoDbConfig {
 
 	@Value("${dynamodb.end-point.url}")
@@ -38,7 +41,7 @@ public class DynamoDbConfig {
     private String awsSecretKey;
 
     public AWSCredentials amazonAWSCredentials() {
-        return new BasicAWSCredentials("key1", "key2");
+        return new BasicAWSCredentials(awsAccessKey, awsSecretKey);
     }
 
     public AWSCredentialsProvider amazonAWSCredentialsProvider() {
