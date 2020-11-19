@@ -26,5 +26,5 @@ public interface UserService {
 
 	void resetPassword(ResetPasswordRequest request);
 
-	public void logout(Principal principal, HttpServletResponse response);
+	void logout(Principal principal, HttpServletResponse response);
 }
