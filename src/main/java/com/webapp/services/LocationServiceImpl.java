@@ -1,5 +1,6 @@
 package com.webapp.services;
 
+import com.webapp.RequestResponseClasses.BookingResponse;
 import com.webapp.models.City;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
