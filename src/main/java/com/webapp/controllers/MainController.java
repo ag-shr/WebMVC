@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping(path = "v1")
+@RequestMapping("v1")
 public class MainController {
 
     @GetMapping("health")
@@ -22,17 +22,18 @@ public class MainController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @GetMapping("cities")
-    public ResponseEntity<List<City>> getAllCities() {
-        return new ResponseEntity<>(
-          WebClient.create()
-            .get()
-            .uri(URI.create("http://localhost:8080/v1/cities"))
-            .retrieve()
-            .bodyToFlux(City.class)
-            .collectList()
-            .block(),
-          HttpStatus.OK);
-    }
+//    @GetMapping("cities")
+//    public ResponseEntity<List<City>> getAllCities() {
+//        return new ResponseEntity<>(
+//          WebClient.create()
+//            .get()
+//            .uri(URI.create("http://localhost:8080/v1/cities"))
+//            .retrieve()
+//            .bodyToFlux(City.class)
+//            .collectList()
+//            .block(),
+//          HttpStatus.OK
+//        );
+//    }
 
 }
