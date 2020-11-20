@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String generateNewTokens(String userName, String lastIdToken) throws NotAuthorizedException, UserNotConfirmedException {
         Map<String, String> authParams = new HashMap<>();
-//        TODO: add multiple device functionality
+//        TODO: add multiple device functionality, then globalSignOut
         Optional<UserTokens> userTokens = repository.findById(userName);
         if (userTokens.isEmpty() || !userTokens.get().getIdToken().equals(lastIdToken))
             return null;
@@ -197,6 +197,9 @@ public class UserServiceImpl implements UserService {
           .withUsername(userEmail);
         try {
             var adminGetUserResult = cognitoIdentityProvider.adminGetUser(adminGetUserRequest);
+//            adminGetUserResult.getUserAttributes()
+//                    .stream().filter(attributeType -> attributeType.getName().equals("email_verified"))
+//                    .findFirst().get();
             if (adminGetUserResult.getUserStatus().equals("CONFIRMED"))
                 cognitoIdentityProvider.forgotPassword(sendCodeForgotPassword(userEmail));
             else if (adminGetUserResult.getUserStatus().equals("UNCONFIRMED")) {

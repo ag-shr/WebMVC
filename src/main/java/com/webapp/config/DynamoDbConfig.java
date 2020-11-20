@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 
 @Log4j2
-//@Configuration
-//@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
+@Configuration
+@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
 public class DynamoDbConfig {
 
 	@Value("${dynamodb.end-point.url}")

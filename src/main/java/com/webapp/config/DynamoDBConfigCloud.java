@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 
-@Configuration
-@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
+//@Configuration
+//@EnableDynamoDBRepositories(basePackages = "com.webapp.repository")
 public class DynamoDBConfigCloud {
 
     @Bean
