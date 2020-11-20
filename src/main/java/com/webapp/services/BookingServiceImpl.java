@@ -4,9 +4,11 @@ import com.webapp.RequestResponseClasses.BookingRequest;
 import com.webapp.RequestResponseClasses.BookingResponse;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class BookingServiceImpl implements BookingService {
 	private final String bookingBaseUrl = "http://localhost:8085/v1/bookings/";
 
@@ -26,6 +28,6 @@ public class BookingServiceImpl implements BookingService {
 	public BookingResponse updateBooking(String bookingId, String username) {
 		return (BookingResponse) ServiceCallUtil.postPutForEntity(bookingBaseUrl + bookingId + "/user/" + username
 		  , HttpMethod.PUT, Void.class
-		  , BookingResponse.class,null );
+		  , BookingResponse.class,Void.TYPE);
 	}
 }

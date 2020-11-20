@@ -1,4 +1,4 @@
-package com.webapp.models;
+package com.webapp.controllers;
 
 
 import com.webapp.RequestResponseClasses.BookingRequest;
