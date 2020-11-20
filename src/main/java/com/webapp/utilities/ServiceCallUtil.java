@@ -29,13 +29,13 @@ public class ServiceCallUtil {
           .block();
     }
 
-    public static Object postPutForEntity(String url, HttpMethod method, Class<?> claas, Object data) {
+    public static Object postPutForEntity(String url, HttpMethod method, Class<?> requestClass, Class<?> responseClass, Object data) {
         return WebClient.create()
           .method(method)
           .uri(URI.create(url))
-          .body(Mono.just(data), claas)
+          .body(Mono.just(data), requestClass)
           .retrieve()
-          .bodyToMono(claas)
+          .bodyToMono(responseClass)
           .block();
     }
 

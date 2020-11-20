@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class LocationServiceImpl implements LocationService{
 
-    private String locationBaseUrl = "http://localhost:8080/v1/cities/";
+    private final String locationBaseUrl = "http://localhost:8080/v1/cities/";
 
     @Override
     public List<City> getAllCities() {
@@ -19,13 +19,13 @@ public class LocationServiceImpl implements LocationService{
 
     @Override
     public City addCity(City city) {
-        return (City) ServiceCallUtil.postPutForEntity(locationBaseUrl, HttpMethod.POST, City.class, city);
+        return (City) ServiceCallUtil.postPutForEntity(locationBaseUrl, HttpMethod.POST, City.class, City.class, city);
     }
 
     @Override
     public City updateCity(String id, City city) {
         String url = locationBaseUrl + id;
-        return (City) ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, City.class, city);
+        return (City) ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, City.class, City.class, city);
     }
 
     @Override
