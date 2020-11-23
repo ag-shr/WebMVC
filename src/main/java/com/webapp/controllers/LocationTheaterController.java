@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
+@RestController
+@RequestMapping("cities")
+@CrossOrigin
 public class LocationTheaterController {
 
     private final TheaterService theaterService;

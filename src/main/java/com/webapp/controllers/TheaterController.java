@@ -19,6 +19,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("theaters")
+@CrossOrigin
 public class TheaterController {
 
     private final TheaterService theaterService;

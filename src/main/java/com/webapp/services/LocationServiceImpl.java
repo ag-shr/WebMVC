@@ -2,15 +2,24 @@ package com.webapp.services;
 
 import com.webapp.models.City;
 import com.webapp.utilities.ServiceCallUtil;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LocationServiceImpl implements LocationService{
 
     private final String locationBaseUrl = "http://localhost:8080/v1/cities/";
+
+    private final RestTemplate restTemplate;
+
+    public LocationServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
+    }
 
     @Override
     public List<City> getAllCities() {
@@ -43,14 +52,13 @@ public class LocationServiceImpl implements LocationService{
     @Override
     public void addMultipleCities(List<String> cities) {
         String url = locationBaseUrl + "batch";
-        ServiceCallUtil.postList(url, String.class, cities);
+        ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Void.class, cities);
     }
 
     @Override
-    public boolean validateBatchExistence(List<String> cities) {
+    public Map<String, String> validateBatchExistence(List<String> cities) {
         String url = locationBaseUrl + "existence";
-        ServiceCallUtil.postList(url, String.class, cities);
-        return true;
+        return (Map<String, String>) ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Map.class, cities);
     }
 
 }

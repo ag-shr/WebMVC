@@ -38,6 +38,8 @@ public interface TheaterService {
 
     Boolean validateTheaterAndMovie(String theaterId, String movieId);
 
+    Map<String, String> getCitiesByIds(List<String> cityIds);
+
     void removeTheatersFromCity(String cityId);
 
     void addMultipleTheaters(List<Theater> theaters);
