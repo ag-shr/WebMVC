@@ -14,12 +14,6 @@ public class LocationServiceImpl implements LocationService{
 
     private final String locationBaseUrl = "http://localhost:8080/v1/cities/";
 
-    private final RestTemplate restTemplate;
-
-    public LocationServiceImpl(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
-    }
-
     @Override
     public List<City> getAllCities() {
         return (List<City>) ServiceCallUtil.getForList(locationBaseUrl, City.class);
