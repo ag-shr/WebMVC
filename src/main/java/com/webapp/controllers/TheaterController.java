@@ -1,7 +1,6 @@
 package com.webapp.controllers;
 
 import com.webapp.models.Theater;
-import com.webapp.models.Theater.ShortMovie;
 import com.webapp.services.TheaterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("theaters")
@@ -29,21 +25,10 @@ public class TheaterController {
         this.theaterService = theaterService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<Theater>> getAllTheaters() {
-//        return new ResponseEntity<>(theaterService.getAllTheaters(), HttpStatus.OK);
-//    }
-
     @PostMapping
     public ResponseEntity<Theater> addTheater(@Valid @RequestBody Theater theater) {
         return new ResponseEntity<>(theaterService.addTheater(theater), HttpStatus.CREATED);
     }
-
-//    @PostMapping("batch")
-//    public ResponseEntity<Void> addMultipleTheaters(@RequestBody List<@NotNull @Valid Theater> theaters) {
-//        theaterService.addMultipleTheaters(theaters);
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
 
     @GetMapping("{id}")
     public ResponseEntity<Theater> findById(@PathVariable("id") String id) {
@@ -60,24 +45,6 @@ public class TheaterController {
         theaterService.removeTheater(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-//    @PutMapping
-//    public ResponseEntity<Void> removeTheseMoviesFromTheseTheaters(@RequestBody Map<String, Set<String>> map) {
-//        theaterService.removeTheseMoviesFromTheseTheaters(map);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
-
-//    @GetMapping("{id}/{movieId}")
-//    public ResponseEntity<Boolean> validateTheaterAndMovie(@PathVariable("id") String theaterId,
-//                                                           @PathVariable("movieId") String movieId) {
-//
-//        return new ResponseEntity<>(theaterService.validateTheaterAndMovie(theaterId, movieId), HttpStatus.OK);
-//    }
-
-//    @GetMapping("{id}/movies")
-//    public ResponseEntity<List<ShortMovie>> getMoviesInATheater(@PathVariable("id") String id) {
-//        return new ResponseEntity<>(theaterService.getMovies(id), HttpStatus.OK);
-//    }
 
     @PostMapping("/{id}/movies/{movieId}")
     public ResponseEntity<Theater> addMovieToTheater(@PathVariable("id") @NotNull String id,

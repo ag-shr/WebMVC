@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class LocationServiceImpl implements LocationService{
@@ -48,17 +47,5 @@ public class LocationServiceImpl implements LocationService{
         String url = locationBaseUrl + id;
         ServiceCallUtil.delete(url);
     }
-
-//    @Override
-//    public void addMultipleCities(List<String> cities) {
-//        String url = locationBaseUrl + "batch";
-//        ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Void.class, cities);
-//    }
-//
-//    @Override
-//    public Map<String, String> validateBatchExistence(List<String> cities) {
-//        String url = locationBaseUrl + "existence";
-//        return (Map<String, String>) ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Map.class, cities);
-//    }
 
 }

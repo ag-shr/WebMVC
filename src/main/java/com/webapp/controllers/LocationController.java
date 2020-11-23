@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("cities")
@@ -56,16 +54,5 @@ public class LocationController {
 //        locationService.addMultipleCities(cities);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-//    @PostMapping("/batch")
-//    public ResponseEntity<Void> addMultipleCities(@RequestBody List<@NotNull String> cities) {
-//        locationService.addMultipleCities(cities);
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
-
-//    @PostMapping("/existence")
-//    public ResponseEntity<Map<String, String>> checkBatchExistence(@RequestBody List<@NotNull String> cityIds) {
-//        return new ResponseEntity<>(locationService.validateBatchExistence(cityIds), HttpStatus.OK);
-//    }
 
 }

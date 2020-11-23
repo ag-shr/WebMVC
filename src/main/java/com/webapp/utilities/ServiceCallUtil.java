@@ -50,9 +50,9 @@ public class ServiceCallUtil {
 		  .uri(URI.create(url))
 		  .body(Mono.just(list), claas)
 		  .retrieve()
-		  .bodyToMono(Void.class)
-		;
+		  .bodyToMono(Void.class);
 	}
+
     public static Object postList(RestTemplate restTemplate, String url, HttpMethod method, Class<?> claas, List<?> list) {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
