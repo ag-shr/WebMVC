@@ -24,15 +24,15 @@ public class LocationTheaterController {
         this.theaterService = theaterService;
     }
 
-    @GetMapping("{id}/theaters")
-    public ResponseEntity<List<Theater>> getTheatersInCity(@PathVariable("id") String cityId) {
-        return new ResponseEntity<>(theaterService.getTheatersInCity(cityId), HttpStatus.OK);
-    }
+//    @GetMapping("{id}/theaters")
+//    public ResponseEntity<List<Theater>> getTheatersInCity(@PathVariable("id") String cityId) {
+//        return new ResponseEntity<>(theaterService.getTheatersInCity(cityId), HttpStatus.OK);
+//    }
 
-    @GetMapping("{id}/movies")
-    public ResponseEntity<Set<ShortMovie>> getMoviesInCity(@PathVariable("id") String cityId) {
-        return new ResponseEntity<>(theaterService.getMoviesInCity(cityId), HttpStatus.OK);
-    }
+//    @GetMapping("{id}/movies")
+//    public ResponseEntity<Set<ShortMovie>> getMoviesInCity(@PathVariable("id") String cityId) {
+//        return new ResponseEntity<>(theaterService.getMoviesInCity(cityId), HttpStatus.OK);
+//    }
 
     @GetMapping("{id}/movies/details")
     public ResponseEntity<List<Movie>> getFullMoviesInCity(@PathVariable("id") String cityId) {
@@ -54,10 +54,10 @@ public class LocationTheaterController {
         return new ResponseEntity<>(theaterService.getTheatersRunningThisMovie(cityId, movieId), HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}/theaters")
-    public ResponseEntity<Void> removeAllTheatersFromCity(@PathVariable("id") String cityId) {
-        theaterService.removeTheatersFromCity(cityId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @DeleteMapping("{id}/theaters")
+//    public ResponseEntity<Void> removeAllTheatersFromCity(@PathVariable("id") String cityId) {
+//        theaterService.removeTheatersFromCity(cityId);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 
 }

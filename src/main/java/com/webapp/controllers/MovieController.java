@@ -27,31 +27,31 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Movie>> getAllMovies() {
-        return new ResponseEntity<>(movieService.findAll(), HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Movie>> getAllMovies() {
+//        return new ResponseEntity<>(movieService.findAll(), HttpStatus.OK);
+//    }
 
-    @GetMapping("latest")
-    public ResponseEntity<List<Movie>> getLatestMovies() {
-        return new ResponseEntity<>(movieService.getLatestMovies(), HttpStatus.OK);
-    }
+//    @GetMapping("latest")
+//    public ResponseEntity<List<Movie>> getLatestMovies() {
+//        return new ResponseEntity<>(movieService.getLatestMovies(), HttpStatus.OK);
+//    }
 
-    @PostMapping("findByIds")
-    public ResponseEntity<Set<Movie>> getMoviesByIds(@RequestBody Set<String> movieIds) {
-        return new ResponseEntity<>(movieService.getMoviesByIds(movieIds), HttpStatus.OK);
-    }
+//    @PostMapping("findByIds")
+//    public ResponseEntity<Set<Movie>> getMoviesByIds(@RequestBody Set<String> movieIds) {
+//        return new ResponseEntity<>(movieService.getMoviesByIds(movieIds), HttpStatus.OK);
+//    }
 
     @PostMapping
     public ResponseEntity<Movie> addMovie(@Valid @RequestBody Movie movie) {
         return new ResponseEntity<>(movieService.addMovie(movie), HttpStatus.CREATED);
     }
 
-    @PostMapping("batch")
-    public ResponseEntity<Void> addMovies(@RequestBody List<@NotNull @Valid Movie> movies) {
-        movieService.addMultipleMovies(movies);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+//    @PostMapping("batch")
+//    public ResponseEntity<Void> addMovies(@RequestBody List<@NotNull @Valid Movie> movies) {
+//        movieService.addMultipleMovies(movies);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
 
     @GetMapping("{id}")
     public ResponseEntity<Movie> findMovie(@PathVariable("id") String id) {

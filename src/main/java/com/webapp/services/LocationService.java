@@ -17,8 +17,8 @@ public interface LocationService {
 
     void deleteCity(String id);
 
-    void addMultipleCities(List<String> cities);
+//    void addMultipleCities(List<String> cities);
 
-    Map<String, String> validateBatchExistence(List<String> cities);
+//    Map<String, String> validateBatchExistence(List<String> cities);
 
 }

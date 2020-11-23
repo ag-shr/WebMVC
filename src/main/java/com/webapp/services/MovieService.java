@@ -7,15 +7,15 @@ import java.util.Set;
 
 public interface MovieService {
 
-    List<Movie> findAll();
-
-    List<Movie> getLatestMovies();
-
-    Set<Movie> getMoviesByIds(Set<String> movieIds);
+//    List<Movie> findAll();
+//
+//    List<Movie> getLatestMovies();
+//
+//    Set<Movie> getMoviesByIds(Set<String> movieIds);
 
     Movie addMovie(Movie movie);
 
-    void addMultipleMovies(List<Movie> movies);
+//    void addMultipleMovies(List<Movie> movies);
 
     Movie findById(String id);
 

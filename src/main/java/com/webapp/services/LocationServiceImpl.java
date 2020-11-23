@@ -49,16 +49,16 @@ public class LocationServiceImpl implements LocationService{
         ServiceCallUtil.delete(url);
     }
 
-    @Override
-    public void addMultipleCities(List<String> cities) {
-        String url = locationBaseUrl + "batch";
-        ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Void.class, cities);
-    }
-
-    @Override
-    public Map<String, String> validateBatchExistence(List<String> cities) {
-        String url = locationBaseUrl + "existence";
-        return (Map<String, String>) ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Map.class, cities);
-    }
+//    @Override
+//    public void addMultipleCities(List<String> cities) {
+//        String url = locationBaseUrl + "batch";
+//        ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Void.class, cities);
+//    }
+//
+//    @Override
+//    public Map<String, String> validateBatchExistence(List<String> cities) {
+//        String url = locationBaseUrl + "existence";
+//        return (Map<String, String>) ServiceCallUtil.postList(restTemplate, url, HttpMethod.POST, Map.class, cities);
+//    }
 
 }
