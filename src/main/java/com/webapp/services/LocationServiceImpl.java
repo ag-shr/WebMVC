@@ -1,6 +1,5 @@
 package com.webapp.services;
 
-import com.webapp.RequestResponseClasses.BookingResponse;
 import com.webapp.models.City;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
@@ -44,7 +43,7 @@ public class LocationServiceImpl implements LocationService{
     @Override
     public void addMultipleCities(List<String> cities) {
         String url = locationBaseUrl + "batch";
-        ServiceCallUtil.postList(url, String[].class, cities);
+        ServiceCallUtil.postList(url, String.class, cities);
     }
 
     @Override
@@ -53,4 +52,5 @@ public class LocationServiceImpl implements LocationService{
         ServiceCallUtil.postList(url, String.class, cities);
         return true;
     }
+
 }
