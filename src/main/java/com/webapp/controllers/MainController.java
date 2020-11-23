@@ -2,11 +2,14 @@ package com.webapp.controllers;
 
 import com.webapp.models.City;
 
+import com.webapp.services.ClientAccessTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.URI;
@@ -21,7 +24,12 @@ public class MainController {
     public ResponseEntity<Boolean> healthCheck() {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
-
+    @Autowired
+    private ClientAccessTokenService clientAccessTokenService;
+    @GetMapping
+    public @ResponseBody String accessToken(){
+        return clientAccessTokenService.getAccessToken();
+    }
 //    @GetMapping("cities")
 //    public ResponseEntity<List<City>> getAllCities() {
 //        return new ResponseEntity<>(

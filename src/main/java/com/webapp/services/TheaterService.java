@@ -44,5 +44,7 @@ public interface TheaterService {
 
     void addMultipleTheaters(List<Theater> theaters);
 
+    Map<String, String> getCitiesByIds(List<String> cityIds);
+
     void addMultipleTheaters(List<Theater> theaters, String cityId);
 }
