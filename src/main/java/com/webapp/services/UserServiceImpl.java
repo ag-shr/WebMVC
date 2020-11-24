@@ -1,6 +1,8 @@
 package com.webapp.services;
 
 import com.webapp.models.UserDetails;
+import com.webapp.utilities.MappingUtilities;
+import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -14,7 +16,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserDetails getUserDetails(String userEmail) {
-		return (UserDetails) ServiceCallUtil.getForEntity(userDetailsBaseUrl+userEmail,UserDetails.class);
+		Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(userDetailsBaseUrl + userEmail));
+		return (UserDetails) MappingUtilities.retrieveEntity(response, "UserDetails");
 	}
 
 	@Override

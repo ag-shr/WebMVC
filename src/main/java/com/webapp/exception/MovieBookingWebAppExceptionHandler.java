@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.validation.ConstraintViolationException;
 
+import com.webapp.RequestResponseClasses.ErrorResponse;
+import com.webapp.RequestResponseClasses.MicroserviceResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -75,6 +77,11 @@ public class MovieBookingWebAppExceptionHandler {
 			message = e.toString();
 		ErrorMessage errorMessage = new ErrorMessage(new Date(), message, HttpStatus.INTERNAL_SERVER_ERROR);
 		return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(MicroserviceException.class)
+	public ResponseEntity<ErrorResponse> serviceCallException(MicroserviceException e) {
+		return ResponseEntity.ok(e.getErrorResponse());
 	}
 
 }

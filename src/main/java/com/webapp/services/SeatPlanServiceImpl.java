@@ -1,11 +1,10 @@
 package com.webapp.services;
 
-import com.webapp.RequestResponseClasses.BookingRequest;
-import com.webapp.RequestResponseClasses.BookingResponse;
 import com.webapp.RequestResponseClasses.SeatPlanResponse;
+import com.webapp.utilities.MappingUtilities;
+import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,8 @@ public class SeatPlanServiceImpl implements SeatPlanService {
 	@Override
 	public SeatPlanResponse getSeatPlanResponse(String seatPlanId) {
 		String url = seatPlanBaseUrl + seatPlanId;
-		return (SeatPlanResponse) ServiceCallUtil.getForEntity(url, SeatPlanResponse.class);
+		Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(url));
+		return (SeatPlanResponse) MappingUtilities.retrieveEntity(response, "SeatPlanResponse");
 	}
 
 	@Override

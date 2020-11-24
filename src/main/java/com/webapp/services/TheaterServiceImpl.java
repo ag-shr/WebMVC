@@ -3,6 +3,8 @@ package com.webapp.services;
 import com.webapp.models.City;
 import com.webapp.models.Movie;
 import com.webapp.models.Theater;
+import com.webapp.utilities.MappingUtilities;
+import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,8 @@ public class TheaterServiceImpl implements TheaterService {
     @Override
     public Theater findTheaterById(String id) {
         String url = theaterBaseUrl + id;
-        return (Theater) ServiceCallUtil.getForEntity(url, Theater.class);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(url));
+        return (Theater) MappingUtilities.retrieveEntity(response, "Theater");
     }
 
     @Override

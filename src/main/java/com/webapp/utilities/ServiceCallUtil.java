@@ -1,7 +1,9 @@
 package com.webapp.utilities;
 
+import com.webapp.RequestResponseClasses.MicroserviceResponse;
 import com.webapp.jwt.JwtConstants;
 import com.webapp.services.ClientAccessTokenService;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -20,12 +23,12 @@ public class ServiceCallUtil {
 
 	private ClientAccessTokenService clientAccessTokenService;
 
-	public static Object getForEntity(String url, Class<?> claas) {
+	public static MicroserviceResponse get(String url) {
 		return WebClient.create()
 		  .get()
 		  .uri(URI.create(url))
 		  .retrieve()
-		  .bodyToMono(claas)
+		  .bodyToMono(MicroserviceResponse.class)
 		  .block();
 	}
 

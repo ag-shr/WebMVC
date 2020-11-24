@@ -1,7 +1,10 @@
 package com.webapp.services;
 
 import com.webapp.models.City;
+import com.webapp.utilities.MappingUtilities;
+import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +18,8 @@ public class LocationServiceImpl implements LocationService{
 
     @Override
     public List<City> getAllCities() {
-        return (List<City>) ServiceCallUtil.getForList(locationBaseUrl, City.class);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(locationBaseUrl));
+        return (List<City>) response;
     }
 
     @Override
@@ -32,7 +36,8 @@ public class LocationServiceImpl implements LocationService{
     @Override
     public City findById(String id) {
         String url = locationBaseUrl + id;
-        return (City) ServiceCallUtil.getForEntity(url, City.class);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(url));
+        return (City) MappingUtilities.retrieveEntity(response, "City");
     }
 
     @Override

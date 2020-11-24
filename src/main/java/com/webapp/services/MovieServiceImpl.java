@@ -1,6 +1,8 @@
 package com.webapp.services;
 
 import com.webapp.models.Movie;
+import com.webapp.utilities.MappingUtilities;
+import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie findById(String id) {
         var url = movieBaseUrl + id.trim();
-        return (Movie) ServiceCallUtil.getForEntity(url, Movie.class);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(url));
+        return (Movie) MappingUtilities.retrieveEntity(response, "Movie");
     }
 
     @Override
