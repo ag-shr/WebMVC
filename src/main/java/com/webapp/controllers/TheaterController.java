@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("theaters")
@@ -62,7 +61,7 @@ public class TheaterController {
     }
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void>  addTheatersViaFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Void>  addTheatersViaFile(@RequestParam("file") MultipartFile file){
 //        var theaters = csvConverter.csvToTheaters(file.getInputStream());
 //        theaterService.addMultipleTheaters(theaters);
         return new ResponseEntity<>(HttpStatus.CREATED);

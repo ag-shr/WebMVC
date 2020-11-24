@@ -20,7 +20,7 @@ public class LocationTheaterController {
         this.theaterService = theaterService;
     }
 
-    @GetMapping("{id}/movies/details")
+    @GetMapping("{id}/movies")
     public ResponseEntity<List<Movie>> getFullMoviesInCity(@PathVariable("id") String cityId) {
         return new ResponseEntity<>(theaterService.getFullMoviesInCity(cityId), HttpStatus.OK);
     }

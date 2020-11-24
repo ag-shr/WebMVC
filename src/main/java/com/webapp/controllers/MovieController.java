@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("movies")
@@ -46,7 +45,7 @@ public class MovieController {
     }
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> addMoviesViaFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Void> addMoviesViaFile(@RequestParam("file") MultipartFile file) {
 //        var movies = CSVConverter.csvToMovies(file.getInputStream());
 //        movieService.addMultipleMovies(movies);
         return new ResponseEntity<>(HttpStatus.CREATED);

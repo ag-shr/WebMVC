@@ -2,10 +2,8 @@ package com.webapp.services;
 
 import com.webapp.models.City;
 import com.webapp.utilities.ServiceCallUtil;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
