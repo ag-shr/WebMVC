@@ -22,16 +22,18 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserDetails addUserDetails(UserDetails userDetails) {
-		return (UserDetails) ServiceCallUtil.postPutForEntity(userDetailsBaseUrl, HttpMethod.POST,UserDetails.class,UserDetails.class,userDetails);
+		Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(userDetailsBaseUrl, HttpMethod.POST, UserDetails.class, userDetails));
+		return (UserDetails) MappingUtilities.retrieveEntity(response, "UserDetails");
 	}
 
 	@Override
 	public UserDetails updateUserDetails(UserDetails userDetails) {
-		return (UserDetails) ServiceCallUtil.postPutForEntity(userDetailsBaseUrl, HttpMethod.PUT,UserDetails.class,UserDetails.class,userDetails);
+		Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(userDetailsBaseUrl, HttpMethod.PUT, UserDetails.class, userDetails));
+		return (UserDetails) MappingUtilities.retrieveEntity(response, "UserDetails");
 	}
 
 	@Override
 	public void deleteUserDetails(String userEmail) {
-		ServiceCallUtil.delete(userDetailsBaseUrl+userEmail);
+		ResponseHandler.handleServiceResponse(ServiceCallUtil.delete(userDetailsBaseUrl + userEmail));
 	}
 }

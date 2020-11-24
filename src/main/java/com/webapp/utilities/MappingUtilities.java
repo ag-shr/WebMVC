@@ -39,9 +39,11 @@ public class MappingUtilities {
             } else if (entity.equals("BookingResponse")) {
                 return mapper.readValue(stringify(object), new TypeReference<BookingResponse>() {
                 });
-            } else {
+            } else if (entity.equals("UserDetails")){
                 return mapper.readValue(stringify(object), new TypeReference<UserDetails>() {
                 });
+            } else {
+                throw new RuntimeException("Invalid Argument Passed");
             }
 
         } catch (JsonProcessingException e) {

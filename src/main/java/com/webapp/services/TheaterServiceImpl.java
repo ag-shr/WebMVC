@@ -1,6 +1,5 @@
 package com.webapp.services;
 
-import com.webapp.models.City;
 import com.webapp.models.Movie;
 import com.webapp.models.Theater;
 import com.webapp.utilities.MappingUtilities;
@@ -29,49 +28,54 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     public Theater addTheater(Theater theater) {
-        return (Theater) ServiceCallUtil.postPutForEntity(theaterBaseUrl, HttpMethod.POST, Theater.class, Theater.class, theater);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(theaterBaseUrl, HttpMethod.POST, Theater.class, theater));
+        return (Theater) MappingUtilities.retrieveEntity(response, "Theater");
     }
 
     @Override
     public void removeTheater(String theaterId) {
         var url = theaterBaseUrl + theaterId;
-        ServiceCallUtil.delete(url);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.delete(url));
     }
 
     @Override
     public Theater updateTheater(String id, Theater theater) {
         var url = theaterBaseUrl + id.trim();
-        return (Theater) ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, Theater.class, Theater.class, theater);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, Theater.class, theater));
+        return (Theater) MappingUtilities.retrieveEntity(response, "Theater");
     }
 
     @Override
     public Theater addMovieInTheater(String theaterId, String movieId) {
         var url = theaterBaseUrl + theaterId + "/movies/" + movieId;
-        return (Theater) ServiceCallUtil.postPutForEntity(url, HttpMethod.POST, Theater.class, Theater.class, NO_BODY);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(url, HttpMethod.POST, Theater.class, NO_BODY));
+        return (Theater) MappingUtilities.retrieveEntity(response, "Theater");
     }
 
     @Override
     public void removeMovieFromTheater(String theaterId, String movieId) {
         var url = theaterBaseUrl + theaterId + "/movies/" + movieId;
-        ServiceCallUtil.delete(url);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.delete(url));
     }
 
     @Override
     public List<Movie> getFullMoviesInCity(String cityId) {
         var url = locationBaseUrl + cityId + "/movies/details";
-        return (List<Movie>) ServiceCallUtil.getForList(url, Movie.class);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(url));
+        return (List<Movie>) response;
     }
 
     @Override
     public List<Theater> getTheatersRunningThisMovie(String cityId, String movieId) {
         var url = locationBaseUrl + cityId + "/theaters/" + movieId;
-        return (List<Theater>) ServiceCallUtil.getForList(url, Theater.class);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.get(url));
+        return (List<Theater>) response;
     }
 
     @Override
     public void sendCSVFile(MultipartFile file) {
         var url = theaterBaseUrl + "/upload";
-        ServiceCallUtil.sendFile(url, file);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.sendFile(url, file));
     }
 
 }

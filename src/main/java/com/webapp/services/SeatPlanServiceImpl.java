@@ -11,6 +11,7 @@ import java.util.List;
 
 @Service
 public class SeatPlanServiceImpl implements SeatPlanService {
+
 	@Value("${service.seatPlan.URL}")
 	private String seatPlanBaseUrl;
 
@@ -24,6 +25,7 @@ public class SeatPlanServiceImpl implements SeatPlanService {
 	@Override
 	public Boolean addLockedSeats(List<String> seats, String seatPlanId, String username) {
 		String url = seatPlanBaseUrl + "lockSeats/" + seatPlanId + "/user/" + username;
-		return ServiceCallUtil.putList(url, List.class, seats);
+		Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.putList(url, List.class, seats));
+		return (Boolean) response;
 	}
 }

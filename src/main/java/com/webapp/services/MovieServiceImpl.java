@@ -15,7 +15,8 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie addMovie(Movie movie) {
-        return (Movie) ServiceCallUtil.postPutForEntity(movieBaseUrl, HttpMethod.POST, Movie.class, Movie.class, movie);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(movieBaseUrl, HttpMethod.POST, Movie.class, movie));
+        return (Movie) MappingUtilities.retrieveEntity(response, "Movie");
     }
 
     @Override
@@ -28,18 +29,19 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie updateMovie(String id, Movie movie) {
         var url = movieBaseUrl + id.trim();
-        return (Movie) ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, Movie.class, Movie.class, movie);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, Movie.class, movie));
+        return (Movie) MappingUtilities.retrieveEntity(response, "Movie");
     }
 
     @Override
     public void deleteMovie(String id) {
         var url = movieBaseUrl + id.trim();
-        ServiceCallUtil.delete(url);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.delete(url));
     }
 
     @Override
     public void sendCSVFile(MultipartFile file) {
         var url = movieBaseUrl + "/upload";
-        ServiceCallUtil.sendFile(url, file);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.sendFile(url, file));
     }
 }

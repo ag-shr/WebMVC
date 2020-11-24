@@ -24,13 +24,15 @@ public class LocationServiceImpl implements LocationService{
 
     @Override
     public City addCity(City city) {
-        return (City) ServiceCallUtil.postPutForEntity(locationBaseUrl, HttpMethod.POST, City.class, City.class, city);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(locationBaseUrl, HttpMethod.POST, City.class, city));
+        return (City) MappingUtilities.retrieveEntity(response, "City");
     }
 
     @Override
     public City updateCity(String id, City city) {
         String url = locationBaseUrl + id;
-        return (City) ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, City.class, City.class, city);
+        Object response = ResponseHandler.handleServiceResponse(ServiceCallUtil.postPutForEntity(url, HttpMethod.PUT, City.class, city));
+        return (City) MappingUtilities.retrieveEntity(response, "City");
     }
 
     @Override
@@ -43,13 +45,13 @@ public class LocationServiceImpl implements LocationService{
     @Override
     public void deleteCity(String id) {
         String url = locationBaseUrl + id;
-        ServiceCallUtil.delete(url);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.delete(url));
     }
 
     @Override
     public void sendCSVFile(MultipartFile file) {
         var url = locationBaseUrl + "/upload";
-        ServiceCallUtil.sendFile(url, file);
+        ResponseHandler.handleServiceResponse(ServiceCallUtil.sendFile(url, file));
     }
 
 }
