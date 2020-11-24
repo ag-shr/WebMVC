@@ -8,7 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 
-import com.webapp.services.UserService;
+import com.webapp.services.CognitoUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,7 +29,7 @@ public class AwsCognitoIdTokenProcessor {
     private final JwtConfiguration jwtConfiguration;
 
     @Autowired
-    private UserService userService;
+    private CognitoUserService cognitoUserService;
 
     private final String tokenName = "auth_token";
 
@@ -92,7 +92,7 @@ public class AwsCognitoIdTokenProcessor {
             System.out.println(ex.getMessage());
         }
         String username = (String) claimSet.get("cognito:username");
-        String jwt = userService.generateNewTokens(username, cookie.getValue());
+        String jwt = cognitoUserService.generateNewTokens(username, cookie.getValue());
 
         if (jwt == null)
             return null;

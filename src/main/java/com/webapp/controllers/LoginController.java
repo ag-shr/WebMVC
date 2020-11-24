@@ -7,11 +7,8 @@ import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.webapp.exception.MovieBookingWebAppException;
-import com.webapp.models.UserChangePasswordRequest;
-import com.webapp.models.ResetPasswordRequest;
-import com.webapp.models.User;
-import com.webapp.models.UserLoginRequestObject;
-import com.webapp.services.UserService;
+import com.webapp.models.*;
+import com.webapp.services.CognitoUserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +24,16 @@ import java.text.ParseException;
 @Controller
 public class LoginController {
 
-    private final UserService userService;
+    private final CognitoUserService cognitoUserService;
 
-    public LoginController(UserService userService) {
-        this.userService = userService;
+    public LoginController(CognitoUserService cognitoUserService) {
+        this.cognitoUserService = cognitoUserService;
     }
 
     @PostMapping(value = "login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user, HttpServletResponse response) {
         try {
-            return new ResponseEntity<>(userService.loginUser(user, response), HttpStatus.OK);
+            return new ResponseEntity<>(cognitoUserService.loginUser(user, response), HttpStatus.OK);
         } catch (NotAuthorizedException | ParseException | JOSEException | BadJOSEException e) {
             throw new MovieBookingWebAppException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (UserNotConfirmedException e) {
@@ -45,10 +42,9 @@ public class LoginController {
     }
 
     @PostMapping(path = "signUp", consumes = "application/x-www-form-urlencoded", produces = "application/json")
-    public ResponseEntity<String> registerUser(@Valid User user) {
-        System.out.println(user.getEmail());
+    public ResponseEntity<UserDetails> registerUser(@Valid User user) {
         try {
-            return new ResponseEntity<>(userService.createUser(user), HttpStatus.OK);
+            return new ResponseEntity<>(cognitoUserService.createUser(user), HttpStatus.OK);
         } catch (UsernameExistsException e) {
             throw new MovieBookingWebAppException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -57,7 +53,7 @@ public class LoginController {
     @GetMapping("forgotPassword")
     @ResponseBody
     public String forgotPassword(@RequestParam("email") String username, HttpServletResponse response) throws IOException {
-        String result = userService.forgotPassword(username);
+        String result = cognitoUserService.forgotPassword(username);
         if(result.equals("resetPassword"))
             response.sendRedirect("resetPassword");
         return result;
@@ -65,20 +61,20 @@ public class LoginController {
 
     @PostMapping(value = "reset", consumes = "application/x-www-form-urlencoded")
     public void resetPassword(ResetPasswordRequest request, HttpServletResponse response) throws IOException {
-        userService.resetPassword(request);
+        cognitoUserService.resetPassword(request);
         response.sendRedirect("login");
     }
 
     @PostMapping(value = "changePassword", consumes = "application/x-www-form-urlencoded")
     public void changePassword(UserChangePasswordRequest request, HttpServletResponse response) throws IOException {
-        userService.changePassword(request);
+        cognitoUserService.changePassword(request);
     }
 
     @GetMapping(path = "logoutUser")
     public void logout(Principal principal, HttpServletResponse response) throws IOException {
         if(principal==null)
             response.sendRedirect("");
-        userService.logout(principal,response);
+        cognitoUserService.logout(principal,response);
         response.sendRedirect("login");
     }
 

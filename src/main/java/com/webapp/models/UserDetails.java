@@ -1,31 +1,29 @@
 package com.webapp.models;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-
-	@NotNull(message = "Name can not be null")
-	private String name;
-
-	@NotNull(message = "Email can not be null")
-	@Email(message = "Email should be in correct format")
+@DynamoDBTable(tableName = "UserDetails")
+public class UserDetails {
+	@NonNull
+	@DynamoDBAttribute
+	private String fullName;
+	@Email
+	@DynamoDBHashKey
 	private String email;
-
-	@NotNull(message = "Password can not be null")
-	private String password;
-
+	@DynamoDBAttribute
 	private String phoneNumber;
-
+	@DynamoDBAttribute
 	private Date dateOfBirth;
-
 }
