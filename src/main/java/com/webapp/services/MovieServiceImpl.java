@@ -4,6 +4,7 @@ import com.webapp.models.Movie;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -31,5 +32,11 @@ public class MovieServiceImpl implements MovieService {
     public void deleteMovie(String id) {
         var url = movieBaseUrl + id.trim();
         ServiceCallUtil.delete(url);
+    }
+
+    @Override
+    public void sendCSVFile(MultipartFile file) {
+        var url = movieBaseUrl + "/upload";
+        ServiceCallUtil.sendFile(url, file);
     }
 }

@@ -1,6 +1,7 @@
 package com.webapp.services;
 
 import com.webapp.models.Movie;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface MovieService {
 
@@ -11,5 +12,7 @@ public interface MovieService {
     Movie updateMovie(String id, Movie movie);
 
     void deleteMovie(String id);
+
+    void sendCSVFile(MultipartFile file);
 
 }

@@ -1,6 +1,7 @@
 package com.webapp.services;
 
 import com.webapp.models.City;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface LocationService {
     City findById(String id);
 
     void deleteCity(String id);
+
+    void sendCSVFile(MultipartFile file);
 
 }

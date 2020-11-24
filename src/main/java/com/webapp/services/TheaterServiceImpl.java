@@ -6,6 +6,7 @@ import com.webapp.models.Theater;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -62,6 +63,12 @@ public class TheaterServiceImpl implements TheaterService {
     public List<Theater> getTheatersRunningThisMovie(String cityId, String movieId) {
         var url = locationBaseUrl + cityId + "/theaters/" + movieId;
         return (List<Theater>) ServiceCallUtil.getForList(url, Theater.class);
+    }
+
+    @Override
+    public void sendCSVFile(MultipartFile file) {
+        var url = theaterBaseUrl + "/upload";
+        ServiceCallUtil.sendFile(url, file);
     }
 
 }

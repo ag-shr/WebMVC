@@ -46,8 +46,7 @@ public class MovieController {
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> addMoviesViaFile(@RequestParam("file") MultipartFile file) {
-//        var movies = CSVConverter.csvToMovies(file.getInputStream());
-//        movieService.addMultipleMovies(movies);
+        movieService.sendCSVFile(file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

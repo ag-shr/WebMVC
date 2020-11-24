@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("v1")
 public class MainController {
 
+    @Autowired
+    private ClientAccessTokenService clientAccessTokenService;
+
     @GetMapping("health")
     public ResponseEntity<Boolean> healthCheck() {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
-    @Autowired
-    private ClientAccessTokenService clientAccessTokenService;
+
     @GetMapping
     public @ResponseBody String accessToken(){
         return clientAccessTokenService.getAccessToken();

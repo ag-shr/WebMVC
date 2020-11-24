@@ -4,6 +4,7 @@ import com.webapp.models.City;
 import com.webapp.utilities.ServiceCallUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,6 +39,12 @@ public class LocationServiceImpl implements LocationService{
     public void deleteCity(String id) {
         String url = locationBaseUrl + id;
         ServiceCallUtil.delete(url);
+    }
+
+    @Override
+    public void sendCSVFile(MultipartFile file) {
+        var url = locationBaseUrl + "/upload";
+        ServiceCallUtil.sendFile(url, file);
     }
 
 }

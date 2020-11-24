@@ -49,8 +49,7 @@ public class LocationController {
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> addCitiesViaFile(@RequestParam("file") MultipartFile file) {
-//        var cities = CSVConverter.csvToCities(file.getInputStream());
-//        locationService.addMultipleCities(cities);
+        locationService.sendCSVFile(file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

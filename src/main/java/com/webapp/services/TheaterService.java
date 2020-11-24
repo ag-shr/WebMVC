@@ -2,6 +2,7 @@ package com.webapp.services;
 
 import com.webapp.models.Movie;
 import com.webapp.models.Theater;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,5 +23,7 @@ public interface TheaterService {
     List<Movie> getFullMoviesInCity(String cityId);
 
     List<Theater> getTheatersRunningThisMovie(String cityId, String movieId);
+
+    void sendCSVFile(MultipartFile file);
 
 }

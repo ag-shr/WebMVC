@@ -62,8 +62,7 @@ public class TheaterController {
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void>  addTheatersViaFile(@RequestParam("file") MultipartFile file){
-//        var theaters = csvConverter.csvToTheaters(file.getInputStream());
-//        theaterService.addMultipleTheaters(theaters);
+        theaterService.sendCSVFile(file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
