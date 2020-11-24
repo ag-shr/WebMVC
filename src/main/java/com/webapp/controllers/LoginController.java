@@ -7,6 +7,7 @@ import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.webapp.exception.MovieBookingWebAppException;
+import com.webapp.models.UserChangePasswordRequest;
 import com.webapp.models.ResetPasswordRequest;
 import com.webapp.models.User;
 import com.webapp.models.UserLoginRequestObject;
@@ -32,20 +33,6 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @GetMapping(path = "signUp")
-    public String getRegisterPage(Principal principal) {
-        if(principal!=null)
-            return "index";
-        return "register";
-    }
-
-    @GetMapping(path = "login")
-    public String getLoginPage(Principal principal) {
-        if(principal!=null)
-            return "index";
-        return "login";
-    }
-
     @PostMapping(value = "login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     public ResponseEntity<String> loginUser(@Valid UserLoginRequestObject user, HttpServletResponse response) {
         try {
@@ -67,29 +54,24 @@ public class LoginController {
         }
     }
 
-    @GetMapping("forgot")
-    public String forgot(Principal principal) {
-        if(principal!=null)
-            return "index";
-        return "forgotPassword";
-    }
-
-    @GetMapping("reset")
-    public String reset(Principal principal) {
-        if(principal!=null)
-            return "index";
-        return "resetPassword";
-    }
-
     @GetMapping("forgotPassword")
+    @ResponseBody
     public String forgotPassword(@RequestParam("email") String username, HttpServletResponse response) throws IOException {
-        return userService.forgotPassword(username);
+        String result = userService.forgotPassword(username);
+        if(result.equals("resetPassword"))
+            response.sendRedirect("resetPassword");
+        return result;
     }
 
     @PostMapping(value = "reset", consumes = "application/x-www-form-urlencoded")
     public void resetPassword(ResetPasswordRequest request, HttpServletResponse response) throws IOException {
         userService.resetPassword(request);
         response.sendRedirect("login");
+    }
+
+    @PostMapping(value = "changePassword", consumes = "application/x-www-form-urlencoded")
+    public void changePassword(UserChangePasswordRequest request, HttpServletResponse response) throws IOException {
+        userService.changePassword(request);
     }
 
     @GetMapping(path = "logoutUser")

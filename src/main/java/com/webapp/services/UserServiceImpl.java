@@ -7,16 +7,16 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+import com.webapp.config.CognitoConfiguration;
 import com.webapp.exception.MovieBookingWebAppException;
+import com.webapp.exception.UnauthorizedException;
 import com.webapp.jwt.AwsCognitoIdTokenProcessor;
-import com.webapp.models.ResetPasswordRequest;
-import com.webapp.models.User;
-import com.webapp.models.UserLoginRequestObject;
-import com.webapp.models.UserTokens;
+import com.webapp.jwt.JwtConstants;
+import com.webapp.models.*;
 import com.webapp.repository.UserTokensRepository;
 import io.netty.util.internal.StringUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -44,24 +44,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserTokensRepository repository;
 
-    @Value("${aws.cognito.clientId}")
-    private String clientId;
-
-    @Value("${aws.cognito.clientSecret}")
-    private String clientSecret;
-
-    @Value("${aws.cognito.userPoolId}")
-    private String userPoolId;
+    private final CognitoConfiguration cognitoConfiguration;
 
     public UserServiceImpl(AWSCognitoIdentityProvider cognitoIdentityProvider,
                            AwsCognitoIdTokenProcessor awsCognitoIdTokenProcessor,
                            ConfigurableJWTProcessor<SecurityContext> configurableJWTProcessor,
-                           UserTokensRepository repository) {
+                           UserTokensRepository repository,
+                           CognitoConfiguration cognitoConfiguration) {
 
         this.cognitoIdentityProvider = cognitoIdentityProvider;
         this.awsCognitoIdTokenProcessor = awsCognitoIdTokenProcessor;
         this.configurableJWTProcessor = configurableJWTProcessor;
         this.repository = repository;
+        this.cognitoConfiguration =cognitoConfiguration;
     }
 
     @Override
@@ -75,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     private SignUpRequest createSignUpRequest(User user) {
         return new SignUpRequest()
-          .withClientId(clientId)
+          .withClientId(cognitoConfiguration.getClientId())
           .withSecretHash(calculateSecretHash(user.getEmail()))
           .withUsername(user.getEmail())
           .withPassword(user.getPassword())
@@ -90,18 +85,18 @@ public class UserServiceImpl implements UserService {
     }
 
     public String calculateSecretHash(String userName) {
-        if (clientSecret == null) {
+        if (cognitoConfiguration.getClientSecret() == null) {
             return null;
         }
 
         SecretKeySpec signingKey = new SecretKeySpec(
-          clientSecret.getBytes(StandardCharsets.UTF_8),
+          cognitoConfiguration.getClientSecret().getBytes(StandardCharsets.UTF_8),
           HMAC_SHA256_ALGORITHM);
         try {
             Mac mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
             mac.init(signingKey);
             mac.update(userName.getBytes(StandardCharsets.UTF_8));
-            byte[] rawHmac = mac.doFinal(clientId.getBytes(StandardCharsets.UTF_8));
+            byte[] rawHmac = mac.doFinal(cognitoConfiguration.getClientId().getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(rawHmac);
 
         } catch (Exception e) {
@@ -151,7 +146,6 @@ public class UserServiceImpl implements UserService {
         authParams.put("SECRET_HASH", calculateSecretHash(userName));
         InitiateAuthResult initiateAuthResult = cognitoIdentityProvider
           .initiateAuth(createInitiateAuthRequest(authParams, AuthFlowType.REFRESH_TOKEN));
-
         if (StringUtil.isNullOrEmpty(initiateAuthResult.getChallengeName())) {
             String idToken = initiateAuthResult.getAuthenticationResult().getIdToken();
             userTokens.get().setAccessToken(initiateAuthResult.getAuthenticationResult().getAccessToken());
@@ -163,14 +157,14 @@ public class UserServiceImpl implements UserService {
     }
 
     private InitiateAuthRequest createInitiateAuthRequest(Map<String, String> authParams, AuthFlowType authFlowType) {
-        return new InitiateAuthRequest().withClientId(clientId)
+        return new InitiateAuthRequest().withClientId(cognitoConfiguration.getClientId())
           .withAuthFlow(authFlowType)
           .withAuthParameters(authParams);
     }
 
     private ForgotPasswordRequest sendCodeForgotPassword(String username) {
         return new ForgotPasswordRequest()
-          .withClientId(clientId)
+          .withClientId(cognitoConfiguration.getClientId())
           .withSecretHash(calculateSecretHash(username))
           .withUsername(username);
     }
@@ -178,7 +172,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         ConfirmForgotPasswordRequest request = new ConfirmForgotPasswordRequest()
-          .withClientId(clientId)
+          .withClientId(cognitoConfiguration.getClientId())
           .withUsername(resetPasswordRequest.getUsername())
           .withPassword(resetPasswordRequest.getPassword())
           .withConfirmationCode(resetPasswordRequest.getCode())
@@ -192,21 +186,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String forgotPassword(String userEmail) throws MovieBookingWebAppException {
-        AdminGetUserRequest adminGetUserRequest = new AdminGetUserRequest()
-          .withUserPoolId(userPoolId)
-          .withUsername(userEmail);
         try {
-            var adminGetUserResult = cognitoIdentityProvider.adminGetUser(adminGetUserRequest);
-//            adminGetUserResult.getUserAttributes()
-//                    .stream().filter(attributeType -> attributeType.getName().equals("email_verified"))
-//                    .findFirst().get();
-            if (adminGetUserResult.getUserStatus().equals("CONFIRMED"))
+            if (this.isEmailVerified(userEmail))
                 cognitoIdentityProvider.forgotPassword(sendCodeForgotPassword(userEmail));
-            else if (adminGetUserResult.getUserStatus().equals("UNCONFIRMED")) {
+            else{
                 cognitoIdentityProvider.resendConfirmationCode(createResendConfirmationCodeRequest(userEmail));
-                return "unverifiedEmail";
-            } else
-                throw new MovieBookingWebAppException("Invalid username or password", HttpStatus.BAD_REQUEST);
+                return "Email Not Verified";
+            }
             return "resetPassword";
         } catch (AWSCognitoIdentityProviderException e) {
             throw new MovieBookingWebAppException(e.getErrorMessage(), HttpStatus.BAD_REQUEST);
@@ -214,8 +200,42 @@ public class UserServiceImpl implements UserService {
     }
 
     private ResendConfirmationCodeRequest createResendConfirmationCodeRequest(String userName) {
-        return new ResendConfirmationCodeRequest().withClientId(clientId).withSecretHash(calculateSecretHash(userName))
+        return new ResendConfirmationCodeRequest().withClientId(cognitoConfiguration.getClientId()).withSecretHash(calculateSecretHash(userName))
           .withUsername(userName);
+    }
+
+    @Override
+    public Boolean changePassword(UserChangePasswordRequest changePasswordRequest) {
+        String userName = this.getUserNameFromSecurityContext();
+        String accessToken = repository.findById(userName)
+          .orElseThrow(() -> new UnauthorizedException("Unauthorized"))
+          .getAccessToken();
+        cognitoIdentityProvider.changePassword(createChangePasswordRequest(accessToken, changePasswordRequest));
+        return true;
+    }
+
+    private boolean isEmailVerified(String email) {
+        AdminGetUserRequest adminGetUserRequest = new AdminGetUserRequest()
+          .withUserPoolId(cognitoConfiguration.getUserPoolId())
+          .withUsername(email);
+        AdminGetUserResult adminGetUserResult = cognitoIdentityProvider
+          .adminGetUser(adminGetUserRequest);
+        boolean isEmailVerified = false;
+        for (AttributeType attr : adminGetUserResult.getUserAttributes())
+            if (JwtConstants.EMAIL_VERIFIED.equals(attr.getName()))
+                isEmailVerified = Boolean.parseBoolean(attr.getValue());
+        return isEmailVerified;
+    }
+
+    private String getUserNameFromSecurityContext() {
+        return ((org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+    }
+
+    private ChangePasswordRequest createChangePasswordRequest(String accessToken, UserChangePasswordRequest changePasswordRequest) {
+        return new ChangePasswordRequest()
+          .withAccessToken(accessToken)
+          .withPreviousPassword(changePasswordRequest.getPrevPassword())
+          .withProposedPassword(changePasswordRequest.getProposedPassword());
     }
 
     @Override

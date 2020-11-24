@@ -55,8 +55,6 @@ public class CognitoConfiguration {
 		this.jwtConfiguration = jwtConfiguration;
 	}
 
-
-
 	@Bean
 	public AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
 		return AWSCognitoIdentityProviderClientBuilder.standard()

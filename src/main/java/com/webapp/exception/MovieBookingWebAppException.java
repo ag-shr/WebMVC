@@ -3,10 +3,6 @@ package com.webapp.exception;
 import org.springframework.http.HttpStatus;
 
 public class MovieBookingWebAppException extends RuntimeException {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6335764236468722888L;
 	private HttpStatus httpStatus;
 
