@@ -5,6 +5,7 @@ import com.webapp.models.Theater;
 import com.webapp.utilities.MappingUtilities;
 import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +15,12 @@ import java.util.List;
 @Service
 public class TheaterServiceImpl implements TheaterService {
 
-    private final String theaterBaseUrl = "http://localhost:8081/v1/theaters/";
-    private final String locationBaseUrl = "http://localhost:8081/v1/cities/";
+    @Value("${service.theater.url}")
+    private String theaterBaseUrl;
+
+    @Value("${service.theater.location.url}")
+    private String locationBaseUrl;
+
     private static final String NO_BODY = "No Body";
 
 

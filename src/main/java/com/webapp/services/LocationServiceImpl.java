@@ -5,6 +5,7 @@ import com.webapp.utilities.MappingUtilities;
 import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +15,8 @@ import java.util.List;
 @Service
 public class LocationServiceImpl implements LocationService{
 
-    private final String locationBaseUrl = "http://localhost:8080/v1/cities/";
+    @Value("${service.location.url}")
+    private String locationBaseUrl;
 
     @Override
     public List<City> getAllCities() {

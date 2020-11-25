@@ -4,6 +4,7 @@ import com.webapp.models.Movie;
 import com.webapp.utilities.MappingUtilities;
 import com.webapp.utilities.ResponseHandler;
 import com.webapp.utilities.ServiceCallUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class MovieServiceImpl implements MovieService {
 
-    private final String movieBaseUrl = "http://localhost:8082/v1/movies/";
+    @Value("${service.movie.url}")
+    private String movieBaseUrl;
 
     @Override
     public Movie addMovie(Movie movie) {

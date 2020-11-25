@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class BookingServiceImpl implements BookingService {
+
     @Value("${service.booking.URL}")
     private String bookingBaseUrl;
 
@@ -37,4 +38,5 @@ public class BookingServiceImpl implements BookingService {
 
         return (BookingResponse) MappingUtilities.retrieveEntity(response, "BookingResponse");
     }
+
 }

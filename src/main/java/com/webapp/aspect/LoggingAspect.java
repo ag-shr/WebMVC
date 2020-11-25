@@ -1,6 +1,5 @@
 package com.webapp.aspect;
 
-import com.webapp.utilities.ServiceCallUtil;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

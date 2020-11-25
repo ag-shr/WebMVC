@@ -21,12 +21,12 @@ public class UserController {
 
 	@GetMapping
 	public ResponseEntity<UserDetails> getUserDetails(Principal principal) {
-		return new ResponseEntity<UserDetails>(userService.getUserDetails(principal.getName()), HttpStatus.OK);
+		return new ResponseEntity<>(userService.getUserDetails(principal.getName()), HttpStatus.OK);
 	}
 
 	@PutMapping
 	public ResponseEntity<UserDetails> updateUserDetails(@Valid @RequestBody UserDetails userDetails) {
-		return new ResponseEntity<UserDetails>(userService.updateUserDetails(userDetails), HttpStatus.OK);
+		return new ResponseEntity<>(userService.updateUserDetails(userDetails), HttpStatus.OK);
 	}
 
 	@DeleteMapping
