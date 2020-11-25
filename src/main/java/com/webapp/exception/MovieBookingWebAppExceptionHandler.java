@@ -62,7 +62,7 @@ public class MovieBookingWebAppExceptionHandler {
 
     @ExceptionHandler(MicroserviceException.class)
     public ResponseEntity<ErrorResponse> serviceCallException(MicroserviceException e) {
-        return new ResponseEntity<>(e.getErrorResponse(), HttpStatus.valueOf(e.getErrorResponse().getCode()));
+        return new ResponseEntity<>(e.getErrorResponse(), HttpStatus.valueOf(Integer.parseInt(e.getErrorResponse().getCode())));
     }
 
 }
