@@ -1,4 +1,4 @@
 FROM openjdk:11
-ADD target/moviebooking-webapp.jar moviebooking-webapp.jar
+ADD target/movie-booking-webapp.jar movie-booking-webapp.jar
 EXPOSE 9090
-ENTRYPOINT ["java", "-jar", "moviebooking-webapp.jar"] 
+ENTRYPOINT ["java", "-jar", "movie-booking-webapp.jar"]
