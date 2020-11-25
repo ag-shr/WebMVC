@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class ErrorResponse {
 
     private String errorMsg;
-    private String code;
     private String cause;
+    private String code;
 
 }

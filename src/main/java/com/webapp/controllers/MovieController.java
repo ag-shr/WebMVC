@@ -38,12 +38,6 @@ public class MovieController {
         return new ResponseEntity<>(movieService.updateMovie(id, movie), HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteMovie(@PathVariable("id") String id) {
-        movieService.deleteMovie(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> addMoviesViaFile(@RequestParam("file") MultipartFile file) {
         movieService.sendCSVFile(file);

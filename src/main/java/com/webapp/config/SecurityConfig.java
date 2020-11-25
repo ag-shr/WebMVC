@@ -30,17 +30,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
           .authorizeRequests()
+          .antMatchers("/","/signUp", "/login", "/forgot", "/reset", "/forgotPassword").permitAll()
           .antMatchers(HttpMethod.GET, "/cities/**").permitAll()
           .antMatchers(HttpMethod.GET, "/movies/**").permitAll()
           .antMatchers(HttpMethod.GET, "/theaters/**").permitAll()
           .antMatchers(HttpMethod.GET, "/v1/screens/**").permitAll()
           .antMatchers(HttpMethod.GET, "/v1/seats/**").permitAll()
-          .antMatchers("/signUp", "/login", "/forgot", "/reset", "/forgotPassword").permitAll()
           .antMatchers("/v1/bookings/**", "/changePassword", "/logoutUser","/v1/users/**").authenticated()
           .anyRequest().hasRole("ADMIN")
           .and()
           .addFilterBefore(awsCognitoJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"));
+          .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
     }
 }

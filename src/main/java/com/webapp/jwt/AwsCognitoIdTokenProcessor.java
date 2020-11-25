@@ -92,10 +92,12 @@ public class AwsCognitoIdTokenProcessor {
             System.out.println(ex.getMessage());
         }
         String username = (String) claimSet.get("cognito:username");
-        String jwt = cognitoUserService.generateNewTokens(username, cookie.getValue());
+        String userEmail = (String) claimSet.get("email");
+        String jwt = cognitoUserService.generateNewTokens(username,userEmail, cookie.getValue());
 
-        if (jwt == null)
+        if (jwt == null) {
             return null;
+        }
 
         cookie.setValue(jwt);
         cookie.setPath("/");

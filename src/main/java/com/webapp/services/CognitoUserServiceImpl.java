@@ -140,10 +140,10 @@ public class CognitoUserServiceImpl implements CognitoUserService {
     }
 
     @Override
-    public String generateNewTokens(String userName, String lastIdToken) throws NotAuthorizedException, UserNotConfirmedException {
+    public String generateNewTokens(String userName, String userEmail, String lastIdToken) throws NotAuthorizedException, UserNotConfirmedException {
         Map<String, String> authParams = new HashMap<>();
 //        TODO: add multiple device functionality, then globalSignOut
-        Optional<UserTokens> userTokens = repository.findById(userName);
+        Optional<UserTokens> userTokens = repository.findById(userEmail);
         if (userTokens.isEmpty() || !userTokens.get().getIdToken().equals(lastIdToken))
             return null;
 

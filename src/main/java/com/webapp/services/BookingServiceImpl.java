@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-    @Value("${service.seatPlan.URL}")
+    @Value("${service.booking.URL}")
     private String bookingBaseUrl;
 
     @Override
